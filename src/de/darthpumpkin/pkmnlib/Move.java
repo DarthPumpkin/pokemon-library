@@ -1,9 +1,6 @@
 package de.darthpumpkin.pkmnlib;
 
 import java.io.Serializable;
-import java.util.List;
-
-import de.darthpumpkin.pkmnlib.battle.AtomarMove;
 
 /**
  * This move model is designed after veekun's db, especially the table 'moves'
@@ -27,7 +24,9 @@ public class Move implements Serializable {
 	private int effectChance;
 
 	private int power;
-	private int pp;
+	private int currentPp;
+	private int maximumPp;	//equals basePp if not raised by Ap-Plus etc.
+	private int basePp;
 	private int accuracy;
 	private int priority;
 	private int target;

@@ -11,6 +11,11 @@ import java.io.Serializable;
  * @author dominik
  * 
  */
+@SuppressWarnings("serial")
 public class AtomarBattleAction implements Serializable {
 
+	private AtomarMove am;	//What happened?
+	private int value;		//How much happened?
+	private int causerId;	//Who caused it?
+	private int targetId;	//To whom did it happen?
 }

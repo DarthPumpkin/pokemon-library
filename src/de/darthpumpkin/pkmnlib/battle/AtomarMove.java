@@ -1,5 +1,7 @@
 package de.darthpumpkin.pkmnlib.battle;
 
+// Description deprecated (?)
+
 /*
  *  I am very unsure about the need of this class. It could possibly replaced by respective ids from the db, as simple integers.
  */
@@ -12,6 +14,6 @@ package de.darthpumpkin.pkmnlib.battle;
  * @author dominik
  * 
  */
-public class AtomarMove {
+public enum AtomarMove {
 
 }

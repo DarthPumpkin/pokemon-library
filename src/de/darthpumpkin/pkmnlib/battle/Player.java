@@ -1,4 +1,4 @@
-package de.darthpumpkin.pkmnlib;
+package de.darthpumpkin.pkmnlib.battle;
 
 import java.io.Serializable;
 
