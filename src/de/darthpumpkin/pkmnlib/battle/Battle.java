@@ -17,9 +17,19 @@ public abstract class Battle implements Serializable {
 	protected Weather weather;
 	protected List<AtomarBattleAction> actionLog;
 	
-	public Battle(Player[] players) {
-		this.players = players;
+	protected void log(AtomarBattleAction action) {
+		actionLog.add(action);
 	}
+	
+	public Battle(Player[] players, Weather weather) {
+		this.players = players;
+		this.weather = weather;
+	}
+	
+	/**
+	 * start the battle.
+	 */
+	public abstract void start();
 	
 	/**
 	 * executes the turns submitted by the players and applies the results

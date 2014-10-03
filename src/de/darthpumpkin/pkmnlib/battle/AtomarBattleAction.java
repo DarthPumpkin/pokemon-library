@@ -14,6 +14,20 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class AtomarBattleAction implements Serializable {
 
+	/**
+	 * 
+	 * @param am What happened?
+	 * @param value How much happened?
+	 * @param causerId Who caused it?
+	 * @param targetId To whom did it happen?
+	 */
+	public AtomarBattleAction(AtomarMove am, int value, int causerId,
+			int targetId) {
+		this.am = am;
+		this.value = value;
+		this.causerId = causerId;
+		this.targetId = targetId;
+	}
 	private AtomarMove am;	//What happened?
 	private int value;		//How much happened?
 	private int causerId;	//Who caused it?
