@@ -27,8 +27,7 @@ public class RegularBattle extends Battle {
 		for (Player player : players) {
 			for (Pokemon p : player.getTeam()) {
 				if (p.isUsable()) {
-					activePokemons.put(player, p);
-					//TODO log
+					this.sendPokemon(player, p);
 					break;
 				}
 			}
@@ -53,6 +52,11 @@ public class RegularBattle extends Battle {
 		if (this.weather != Weather.NORMAL) {
 			//TODO log
 		}
+	}
+
+	private void sendPokemon(Player player, Pokemon p) {
+		activePokemons.put(player, p);
+		//TODO log
 	}
 
 }
