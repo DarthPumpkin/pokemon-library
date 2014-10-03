@@ -6,8 +6,9 @@ import de.darthpumpkin.pkmnlib.Pokemon;
 
 @SuppressWarnings("serial")
 public class RegularBattle extends Battle {
-	
+
 	private Map<Player, Pokemon> activePokemons;
+	private boolean runningEnabled;
 
 	public RegularBattle(Player[] players, Weather weather) {
 		super(players, weather);
@@ -15,8 +16,40 @@ public class RegularBattle extends Battle {
 
 	@Override
 	public void doTurn(Map<Player, Turn> turns) {
-		// TODO Auto-generated method stub
-
+		/*
+		 * 1st: running
+		 */
+		for (Player player : players) {
+			if (turns.get(player).getOption() == TurnOption.RUN) {
+				if (runningEnabled) { // TODO there are moves and abilities that
+										// can prevent escaping
+					// TODO implement escape
+				}
+			}
+		}
+		/*
+		 * 2nd: swapping
+		 */
+		for (Player player : players) {
+			if (turns.get(player).getOption() == TurnOption.SWAP_PKMN) {
+				if (true) { // TODO there are moves and abilities that can
+							// prevent swapping
+					Pokemon p = player.getTeam()[turns.get(player).getTargetId()];
+					if (!p.isUsable()) {
+						throw new RuntimeException(p.toString() + " is not usable.");
+					}
+					withdrawPokemon(player);
+					sendPokemon(player, p);
+				}
+			}
+		}
+		/*
+		 * 3rd: item usage
+		 */
+		
+		/*
+		 * 4th: regular move
+		 */
 	}
 
 	@Override
@@ -31,9 +64,10 @@ public class RegularBattle extends Battle {
 					break;
 				}
 			}
-			//Exception handling
+			// Exception handling
 			if (activePokemons.get(player) == null) {
-				throw new RuntimeException(player.toString() + " has no usable pkmns!");
+				throw new RuntimeException(player.toString()
+						+ " has no usable pkmns!");
 			}
 		}
 		/*
@@ -42,7 +76,7 @@ public class RegularBattle extends Battle {
 		for (Player p : players) {
 			int ability = activePokemons.get(p).getAbility();
 			switch (ability) {
-			//TODO implement abilities
+			// TODO implement abilities
 			default:
 			}
 		}
@@ -50,13 +84,17 @@ public class RegularBattle extends Battle {
 		 * log weather if not normal
 		 */
 		if (this.weather != Weather.NORMAL) {
-			//TODO log
+			// TODO log
 		}
 	}
 
 	private void sendPokemon(Player player, Pokemon p) {
 		activePokemons.put(player, p);
-		//TODO log
+		// TODO log
 	}
 
+	private void withdrawPokemon(Player player) {
+		activePokemons.put(player, null);
+		// TODO log
+	}
 }
