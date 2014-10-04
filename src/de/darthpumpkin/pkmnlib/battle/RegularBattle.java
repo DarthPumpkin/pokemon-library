@@ -2,6 +2,7 @@ package de.darthpumpkin.pkmnlib.battle;
 
 import java.util.Map;
 
+import de.darthpumpkin.pkmnlib.Item;
 import de.darthpumpkin.pkmnlib.Pokemon;
 
 @SuppressWarnings("serial")
@@ -34,7 +35,9 @@ public class RegularBattle extends Battle {
 			if (turns.get(player).getOption() == TurnOption.SWAP_PKMN) {
 				if (true) { // TODO there are moves and abilities that can
 							// prevent swapping
-					Pokemon p = player.getTeam()[turns.get(player).getTargetId()];
+					Pokemon p = player.getTeam()[turns.get(player)
+							.getTargetId()]; // targetId is the index of the
+												// pokemon to be sent in
 					if (!p.isUsable()) {
 						throw new RuntimeException(p.toString() + " is not usable.");
 					}
@@ -46,10 +49,17 @@ public class RegularBattle extends Battle {
 		/*
 		 * 3rd: item usage
 		 */
-		
+		for (Player player : players) {
+			if (turns.get(player).getOption() == TurnOption.USE_ITEM) {
+				Item item = turns.get(player).getItem();
+				item.getParent().remove(item);
+				//TODO implement item usage
+			}
+		}
 		/*
 		 * 4th: regular move
 		 */
+		
 	}
 
 	@Override

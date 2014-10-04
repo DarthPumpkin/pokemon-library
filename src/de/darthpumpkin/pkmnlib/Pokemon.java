@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 
 @SuppressWarnings("serial")
-public class Pokemon implements Serializable {
+public class Pokemon implements Serializable, ItemContainer {
 
 	/**
 	 * 
@@ -24,6 +24,17 @@ public class Pokemon implements Serializable {
 	public int getAbility() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void remove(Item item) {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	public void attach(Item item) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
