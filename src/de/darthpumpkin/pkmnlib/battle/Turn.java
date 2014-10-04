@@ -11,6 +11,7 @@ public class Turn implements Serializable {
 	private Move move;
 	private Item item;
 	private int targetId;
+	private Player parent;
 	
 	/*
 	 * getters and setters
@@ -38,6 +39,12 @@ public class Turn implements Serializable {
 	}
 	public void setTargetId(int targetId) {
 		this.targetId = targetId;
+	}
+	public Player getParent() {
+		return parent;
+	}
+	public void setParent(Player parent) {
+		this.parent = parent;
 	}
 }
 

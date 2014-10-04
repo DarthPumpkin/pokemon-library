@@ -30,6 +30,12 @@ public class Move implements Serializable {
 	private int accuracy;
 	private int priority;
 	private int target;
+	
+	
+	public int getPriority() {
+		// TODO Auto-generated method stub
+		return priority;
+	}
 }
 
 /*

@@ -15,6 +15,7 @@ public abstract class Battle implements Serializable {
 	
 	protected final Player[] players;
 	protected Weather weather;
+	protected int trickRoomCounter;	//remaining turns where trick room is active
 	protected List<AtomarBattleAction> actionLog;
 	
 	protected void log(AtomarBattleAction action) {
