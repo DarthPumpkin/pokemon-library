@@ -33,8 +33,15 @@ public class Move implements Serializable {
 	
 	
 	public int getPriority() {
-		// TODO Auto-generated method stub
 		return priority;
+	}
+
+	public int getEffectId() {
+		return effectId;
+	}
+
+	public int getCurrentPp() {
+		return currentPp;
 	}
 }
 

@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import de.darthpumpkin.pkmnlib.Item;
 import de.darthpumpkin.pkmnlib.Pokemon;
 import de.darthpumpkin.pkmnlib.Pokemon.Stat;
@@ -15,6 +16,8 @@ public class RegularBattle extends Battle {
 
 	private Map<Player, Pokemon> activePokemons;
 	private boolean runningEnabled;
+	private Map<Player, Boolean> expEnabled;
+	private boolean active;
 
 	public RegularBattle(Player[] players, Weather weather) {
 		super(players, weather);
@@ -22,6 +25,9 @@ public class RegularBattle extends Battle {
 
 	@Override
 	public void doTurn(Map<Player, Turn> turns) {
+		// could also use List<Turn> because Turn has attribute getParent()
+		// could also use one big comparator to sort turns, then just
+		// execute successively
 		/*
 		 * 1st: running
 		 */
@@ -67,11 +73,16 @@ public class RegularBattle extends Battle {
 		 */
 		List<Turn> turnsInOrder = new ArrayList<Turn>();
 		turnsInOrder.addAll(turns.values());
+		for (Turn turn : turnsInOrder) {
+			if (turn.getMove().getCurrentPp() <= 0) {
+				throw new RuntimeException("no PP left!");
+			}
+		}
 		// decide who's first
 		Collections.sort(turnsInOrder, new Comparator<Turn>() {
 			@Override
 			public int compare(Turn o0, Turn o1) {
-				//first, compare priotities
+				// first, compare priotities
 				int[] prios = new int[] { o0.getMove().getPriority(),
 						o1.getMove().getPriority() };
 				if (prios[0] < prios[1]) {
@@ -79,7 +90,7 @@ public class RegularBattle extends Battle {
 				}
 				if (prios[1] < prios[0]) {
 					return 1;
-				} else { //priorities are eaual, compare speed
+				} else { // priorities are eaual, compare speed
 					int result = 0;
 					float[] speeds = new float[] {
 							activePokemons.get(o0.getParent()).getCurrent(
@@ -98,8 +109,27 @@ public class RegularBattle extends Battle {
 					return result;
 				}
 			}
-
 		});
+		for (Turn turn : turnsInOrder) {
+			if (!activePokemons.get(turn.getParent()).isUsable()) {
+				//pkmn fainted before it could attack
+				continue;
+			}
+			switch (turn.getMove().getEffectId()) {
+			// TODO implement effectIds
+			default:
+				throw new RuntimeException("Unknown effect id");
+			}
+		}
+		//check if there are pkmns who fainted
+		for (Player player : players) {
+			if (!activePokemons.get(player).isUsable()) {
+				if (player.forceSwitch(activePokemons.get(player)) == null) {
+					this.active = false;
+					// TODO we have a winner
+				}
+			}
+		}
 	}
 
 	@Override
@@ -146,5 +176,10 @@ public class RegularBattle extends Battle {
 	private void withdrawPokemon(Player player) {
 		activePokemons.put(player, null);
 		// TODO log
+	}
+
+	@Override
+	public boolean isActive() {
+		return active;
 	}
 }

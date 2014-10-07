@@ -39,6 +39,12 @@ public abstract class Battle implements Serializable {
 	public abstract void doTurn(Map<Player, Turn> turns);
 	
 	/**
+	 * determines whether the battle is over
+	 * @return false if the battle is over, true if not
+	 */
+	public abstract boolean isActive();
+	
+	/**
 	 * clear and return the actionLog
 	 * @return
 	 */
