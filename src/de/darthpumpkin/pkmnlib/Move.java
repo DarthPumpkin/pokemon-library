@@ -15,6 +15,10 @@ import java.io.Serializable;
  */
 @SuppressWarnings("serial")
 public class Move implements Serializable {
+	
+	public enum DamageClass {
+		STATUS, PHYSICAL, SPECIAL
+	}
 
 	private String name;
 	private DamageClass damageClass;
@@ -43,11 +47,24 @@ public class Move implements Serializable {
 	public int getCurrentPp() {
 		return currentPp;
 	}
-}
 
-/*
- * can't enumerate everything; which enums make sense?
- */
-enum DamageClass {
-	STATUS, PHYSICAL, SPECIAL
+	public DamageClass getDamageClass() {
+		return this.damageClass;
+	}
+
+	public int getPower() {
+		return power;
+	}
+
+	public void setPower(int power) {
+		this.power = power;
+	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
 }
