@@ -2,6 +2,7 @@ package de.darthpumpkin.pkmnlib;
 
 import java.io.Serializable;
 
+// TODO javadoc
 /**
  * 
  * @author dominik
@@ -11,6 +12,9 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public class Pokemon implements Serializable, ItemContainer {
 
+	/*
+	 * nested classes and enums
+	 */
 	public enum StatusProblem {
 		// TODO check if there is an order for status problems in the db and if
 		// so, is it different from this one?
@@ -25,19 +29,29 @@ public class Pokemon implements Serializable, ItemContainer {
 		Stat(int index) {
 			this.index = index;
 		}
+
 		public int i() {
 			return index;
 		}
 	}
 
+	/*
+	 * fields
+	 */
 	private int[] baseStats;
 	private int[] currentStats; // those you would see in the game
 	private int[] temporaryStatModifiers; // from -6 to 6; reset after
 											// switch-out
 	private int level;
 	private Type[] types;
-	private StatusProblem statusProblem;	//null if there is none
+	private StatusProblem statusProblem; // null if there is none
+	// TODO there are hidden abilities (...?)
+	private int abilityId;
+	private boolean flying; //in the air by using the move 'fly'
 
+	/*
+	 * methods
+	 */
 	/**
 	 * 
 	 * @return true if it can be used in a battle. False if not (fainted, egg,
@@ -46,11 +60,6 @@ public class Pokemon implements Serializable, ItemContainer {
 	public boolean isUsable() {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	public int getAbility() {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override
@@ -65,6 +74,38 @@ public class Pokemon implements Serializable, ItemContainer {
 
 	}
 
+	/**
+	 * subtracts damage from this pkmn's current hp. Set to 0 if damage > hp
+	 * 
+	 * @param damage
+	 *            damage to be inflicted
+	 */
+	public void applyDamage(int damage) {
+		int hpStat = this.currentStats[Stat.HP.i()];
+		hpStat -= damage;
+		if (hpStat < 0) {
+			hpStat = 0;
+		}
+	}
+
+	/**
+	 * 
+	 * @param type
+	 * @return true if one of the pkmn's types equals the Type passed as
+	 *         argument.
+	 */
+	public boolean isOfType(Type type) {
+		for (Type t : types) {
+			if (t == type) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/*
+	 * getters and setters
+	 */
 	public int[] getBaseStats() {
 		return baseStats;
 	}
@@ -104,7 +145,7 @@ public class Pokemon implements Serializable, ItemContainer {
 	 * temporary changes including +2 from swords dance etc.
 	 * 
 	 * @param stat
-	 *            the stat you want to have computed
+	 *            the stat you want computed
 	 * @return
 	 */
 	public float getCurrent(Stat stat) {
@@ -142,22 +183,23 @@ public class Pokemon implements Serializable, ItemContainer {
 
 	/**
 	 * use null if the status problem is cured
+	 * 
 	 * @param statusProblem
 	 */
 	public void setStatusProblem(StatusProblem statusProblem) {
 		this.statusProblem = statusProblem;
 	}
 
-	/**
-	 * subtracts damage from this pkmn's current hp. Set to 0 if damage > hp
-	 * @param damage damage to be inflicted
-	 */
-	public void applyDamage(int damage) {
-		int hpStat = this.currentStats[Stat.HP.i()];
-		hpStat -= damage;
-		if (hpStat < 0) {
-			hpStat = 0;
-		}
+	public int getAbilityId() {
+		return abilityId;
+	}
+
+	public void setAbilityId(int abilityId) {
+		this.abilityId = abilityId;
+	}
+
+	public boolean isFlying() {
+		return flying;
 	}
 
 }

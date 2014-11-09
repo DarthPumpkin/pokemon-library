@@ -6,12 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import de.darthpumpkin.pkmnlib.Item;
-import de.darthpumpkin.pkmnlib.Move;
-import de.darthpumpkin.pkmnlib.Move.DamageClass;
-import de.darthpumpkin.pkmnlib.Pokemon;
-import de.darthpumpkin.pkmnlib.Pokemon.Stat;
-import de.darthpumpkin.pkmnlib.Pokemon.StatusProblem;
+import de.darthpumpkin.pkmnlib.*;
 
 @SuppressWarnings("serial")
 public class RegularBattle extends Battle {
@@ -27,17 +22,28 @@ public class RegularBattle extends Battle {
 
 	@Override
 	public void doTurn(Map<Player, Turn> turns) {
-		// could also use List<Turn> because Turn has attribute getParent()
+		// could also use Set<Turn> because Turn has attribute getParent()
 		// could also use one big comparator to sort turns, then just
 		// execute successively
 		/*
 		 * 1st: running
 		 */
 		for (Player player : players) {
-			if (turns.get(player).getOption() == TurnOption.RUN) {
-				if (runningEnabled) { // TODO there are moves and abilities that
-										// can prevent escaping
-					// TODO implement escape
+			Turn turn = turns.get(player);
+			if (turn.getOption() == TurnOption.RUN) {
+				if (runningEnabled) { // TODO there are moves that can prevent
+										// escaping
+					Pokemon defendingPkmn = (turn.getParent() == players[0]) ? activePokemons
+							.get(players[1]) : activePokemons.get(players[0]);
+					Pokemon attackingPkmn = activePokemons
+							.get(turn.getParent());
+					if (defendingPkmn.getAbilityId() != 71
+							|| attackingPkmn.isOfType(Type.FLYING)
+							|| attackingPkmn.isFlying()) {
+						// 71 == 'arena trap'; but still works when flying-type
+						// or in the air
+						// TODO implement escape
+					}
 				}
 			}
 		}
@@ -96,9 +102,9 @@ public class RegularBattle extends Battle {
 					int result = 0;
 					float[] speeds = new float[] {
 							activePokemons.get(o0.getParent()).getCurrent(
-									Stat.SPEED),
+									Pokemon.Stat.SPEED),
 							activePokemons.get(o1.getParent()).getCurrent(
-									Stat.SPEED) };
+									Pokemon.Stat.SPEED) };
 					if (speeds[0] < speeds[1]) {
 						result = -1;
 					}
@@ -160,8 +166,8 @@ public class RegularBattle extends Battle {
 				 * [Sp]Atk
 				 */
 				double atkStat = (turn.getMove().getDamageClass() == Move.DamageClass.PHYSICAL) ? attackingPkmn
-						.getCurrent(Stat.ATK) : attackingPkmn
-						.getCurrent(Stat.SPATK);
+						.getCurrent(Pokemon.Stat.ATK) : attackingPkmn
+						.getCurrent(Pokemon.Stat.SPATK);
 				// TODO see
 				// http://www.smogon.com/dp/articles/damage_formula#atk_abilities
 				double abilityModifier = 1d;
@@ -179,8 +185,8 @@ public class RegularBattle extends Battle {
 				 * [Sp]Def
 				 */
 				double defStat = (turn.getMove().getDamageClass() == Move.DamageClass.PHYSICAL) ? defendingPkmn
-						.getCurrent(Stat.DEF) : defendingPkmn
-						.getCurrent(Stat.SPDEF);
+						.getCurrent(Pokemon.Stat.DEF) : defendingPkmn
+						.getCurrent(Pokemon.Stat.SPDEF);
 				// TODO see
 				// http://www.smogon.com/dp/articles/damage_formula#defense
 				double sx = 1d;
@@ -195,9 +201,10 @@ public class RegularBattle extends Battle {
 				/*
 				 * MOD1
 				 */
-				// TODO brn is always 1 if the attacker's ability is guts
-				double brn = (turn.getMove().getDamageClass() == DamageClass.PHYSICAL && attackingPkmn
-						.getStatusProblem() == StatusProblem.BURN) ? 0.5 : 1;
+				// TODO brn is always 1 if the attacker's ability is 'guts'
+				double brn = (turn.getMove().getDamageClass() == Move.DamageClass.PHYSICAL && attackingPkmn
+						.getStatusProblem() == Pokemon.StatusProblem.BURN) ? 0.5
+						: 1;
 				// TODO see
 				// http://www.smogon.com/dp/articles/damage_formula#mod1
 				double rl = 1d;
@@ -256,7 +263,7 @@ public class RegularBattle extends Battle {
 						* mod1) + 2) * critical * mod2)
 						* r / 100);
 				defendingPkmn.applyDamage(damage);
-				//TODO log!
+				// TODO log!
 				break;
 			// TODO implement effectIds
 			default:
@@ -296,7 +303,7 @@ public class RegularBattle extends Battle {
 		 * activate abilities
 		 */
 		for (Player p : players) {
-			int ability = activePokemons.get(p).getAbility();
+			int ability = activePokemons.get(p).getAbilityId();
 			switch (ability) {
 			// TODO implement abilities
 			default:

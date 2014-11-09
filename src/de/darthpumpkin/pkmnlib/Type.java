@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Type {
-	PLANT, GRASS; // TODO add all types
+	PLANT, GRASS, FLYING; // TODO add all types
 
 	// [attacking, defending] : effectiveness
 	private static final Map<Type[], Float> effectivenesses;
