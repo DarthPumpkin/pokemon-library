@@ -10,7 +10,7 @@ import de.darthpumpkin.pkmnlib.*;
 import de.darthpumpkin.pkmnlib.Pokemon.Stat;
 
 @SuppressWarnings("serial")
-public class RegularBattle extends Battle {
+public class RegularBattle extends AbstractBattle {
 
 	private Map<Player, Pokemon> activePokemons;
 	private boolean runningEnabled;

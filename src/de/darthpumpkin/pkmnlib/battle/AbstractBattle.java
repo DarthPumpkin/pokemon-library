@@ -11,7 +11,7 @@ import java.util.Map;
  *
  */
 @SuppressWarnings("serial")
-public abstract class Battle implements Serializable {
+public abstract class AbstractBattle implements Serializable {
 	
 	protected final Player[] players;
 	protected Weather weather;
@@ -22,7 +22,7 @@ public abstract class Battle implements Serializable {
 		actionLog.add(action);
 	}
 	
-	public Battle(Player[] players, Weather weather) {
+	public AbstractBattle(Player[] players, Weather weather) {
 		this.players = players;
 		this.weather = weather;
 	}
