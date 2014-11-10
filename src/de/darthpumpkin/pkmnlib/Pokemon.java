@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 // TODO javadoc
 /**
+ * To make a pokemon, use a PokemonFactory implementation to create a
+ * PokemonBuilder. Use latter to specify the desired attributes, then call
+ * makePokemon().
  * 
  * @author dominik
  * 
@@ -47,7 +50,7 @@ public class Pokemon implements Serializable, ItemContainer {
 	private StatusProblem statusProblem; // null if there is none
 	// TODO there are hidden abilities (...?)
 	private int abilityId;
-	private boolean flying; //in the air by using the move 'fly'
+	private boolean flying; // in the air by using the move 'fly'
 
 	/*
 	 * methods
