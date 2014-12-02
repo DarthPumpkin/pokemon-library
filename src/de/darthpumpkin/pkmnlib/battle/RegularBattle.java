@@ -25,7 +25,7 @@ public class RegularBattle extends AbstractBattle {
 	public void doTurn(Map<Player, Turn> turns) {
 		List<Turn> turnsInOrder = new ArrayList<Turn>();
 		turnsInOrder.addAll(turns.values());
-		
+
 		// decide who's first
 		Collections.sort(turnsInOrder, new Comparator<Turn>() {
 			@Override
@@ -65,7 +65,7 @@ public class RegularBattle extends AbstractBattle {
 						// TODO implement escape
 					} else {
 						// TODO log running is not possible because of arena
-						// trap
+						// trap 
 					}
 				} else {
 					// TODO log running is not possible (trainer battle etc.)
@@ -98,7 +98,7 @@ public class RegularBattle extends AbstractBattle {
 					continue;
 				}
 				// TODO check if attack hits (accuracy, evasion...)
-				
+
 				// if we're here, the attack was successful; now apply the
 				// effects
 				switch (turn.getMove().getEffectId()) {
@@ -133,12 +133,12 @@ public class RegularBattle extends AbstractBattle {
 					// multiplying all beforementioned values with flooring
 					// after
 					// each step for the final basePower value
-					double basePower = Math
-							.floor(Math.floor(Math.floor(Math.floor(Math
-									.floor(helpingHand * power) * itemMultiplier)
-									* charge)
-									* sport)
-									* abilityMultiplier);
+					double basePower = Math.floor(Math.floor(Math.floor(Math
+							.floor(Math.floor(helpingHand * power)
+									* itemMultiplier)
+							* charge)
+							* sport)
+							* abilityMultiplier);
 					/*
 					 * [Sp]Atk
 					 */
@@ -219,7 +219,8 @@ public class RegularBattle extends AbstractBattle {
 					 * STAB
 					 */
 					// TODO stab is 2 if the attaacker's ability is adaptability
-					double stab = turn.getMove().getType().getStab(attackingPkmn);
+					double stab = turn.getMove().getType()
+							.getStab(attackingPkmn);
 
 					/*
 					 * TYPE1 and TYPE2
@@ -238,8 +239,10 @@ public class RegularBattle extends AbstractBattle {
 					 * now, the final formula
 					 */
 					int damage = (int) Math.floor(Math.floor((Math.floor(Math
-							.floor(Math.floor(level * basePower * atk / 50) / def)
-							* mod1) + 2) * critical * mod2)
+							.floor(Math.floor(level * basePower * atk / 50)
+									/ def)
+							* mod1) + 2)
+							* critical * mod2)
 							* r / 100);
 					defendingPkmn.applyDamage(damage);
 					// TODO log!
@@ -295,6 +298,9 @@ public class RegularBattle extends AbstractBattle {
 	}
 
 	private void withdrawPokemon(Player player) {
+		// reset temporary stat modifiers
+		java.util.Arrays.fill(activePokemons.get(player)
+				.getTemporaryStatModifiers(), 0);
 		activePokemons.put(player, null);
 		// TODO log
 	}
