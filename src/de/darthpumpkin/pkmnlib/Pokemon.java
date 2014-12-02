@@ -205,4 +205,16 @@ public class Pokemon implements Serializable, ItemContainer {
 		return flying;
 	}
 
+	@Override
+	public boolean holdsItem(Item item) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean holdsItemInstanceOf(int id) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

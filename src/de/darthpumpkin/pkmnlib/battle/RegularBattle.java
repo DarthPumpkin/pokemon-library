@@ -57,11 +57,14 @@ public class RegularBattle extends AbstractBattle {
 			case RUN:
 				if (runningEnabled) { // TODO there are moves that can prevent
 					// escaping
+					// see http://www.serebii.net/games/escape.shtml
 					if (defendingPkmn.getAbilityId() != 71
 							|| attackingPkmn.isOfType(Type.FLYING)
-							|| attackingPkmn.isFlying()) {
+							|| attackingPkmn.isFlying()
+							|| attackingPkmn.holdsItemInstanceOf(272)) {
 						// 71 == 'arena trap'; but still works when flying-type
 						// or in the air
+						// 272 == 'shed shell'
 						// TODO implement escape
 					} else {
 						// TODO log running is not possible because of arena
@@ -74,8 +77,10 @@ public class RegularBattle extends AbstractBattle {
 			case SWAP_PKMN:
 				if (defendingPkmn.getAbilityId() != 71
 						|| attackingPkmn.isOfType(Type.FLYING)
-						|| attackingPkmn.isFlying()) {
+						|| attackingPkmn.isFlying()
+						|| attackingPkmn.holdsItemInstanceOf(272)) {
 					// TODO there are moves that can prevent swapping
+					// see http://www.serebii.net/games/escape.shtml
 					Pokemon p = player.getTeam()[turns.get(player)
 							.getTargetId()]; // targetId is the index of the
 												// pokemon to be sent in
@@ -85,6 +90,8 @@ public class RegularBattle extends AbstractBattle {
 					}
 					withdrawPokemon(player);
 					sendPokemon(player, p);
+				} else {
+					// TODO log swapping is not possible because of arena trap
 				}
 				break;
 			case USE_ITEM:
