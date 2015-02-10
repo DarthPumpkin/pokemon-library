@@ -9,6 +9,18 @@ public class PokemonBattleInstance implements Serializable, ItemContainer {
 											// switch-out
 	private boolean flying; // in the air by using the move 'fly'
 	
+	public PokemonBattleInstance(PokemonInstance instance) {
+		this.instance = instance;
+	}
+
+	public PokemonInstance getInstance() {
+		return instance;
+	}
+
+	public void setInstance(PokemonInstance instance) {
+		this.instance = instance;
+	}
+
 	public int[] getTemporaryStatModifiers() {
 		return temporaryStatModifiers;
 	}

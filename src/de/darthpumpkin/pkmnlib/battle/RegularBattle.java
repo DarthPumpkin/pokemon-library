@@ -11,13 +11,65 @@ import de.darthpumpkin.pkmnlib.*;
 @SuppressWarnings("serial")
 public class RegularBattle extends AbstractBattle {
 
-	private Map<Player, PokemonInstance> activePokemons;
+	private Map<Player, PokemonBattleInstance> activePokemons;
 	private boolean runningEnabled;
 	private Map<Player, Boolean> expEnabled;
 	private boolean active;
 
 	public RegularBattle(Player[] players, Weather weather) {
 		super(players, weather);
+	}
+	
+	@Override
+	public void start() {
+		/*
+		 * select starting pkmns
+		 */
+		for (Player player : players) {
+			for (PokemonInstance p : player.getTeam()) {
+				if (p.isUsable()) {
+					this.sendPokemon(player, p);
+					break;
+				}
+			}
+			// Exception handling
+			if (activePokemons.get(player) == null) {
+				throw new RuntimeException(player.toString()
+						+ " has no usable pkmns!");
+			}
+		}
+		/*
+		 * activate abilities
+		 */
+		for (Player p : players) {
+			int ability = activePokemons.get(p).getInstance().getAbilityId();
+			switch (ability) {
+			// TODO implement abilities
+			default:
+			}
+		}
+		/*
+		 * log weather if not normal
+		 */
+		if (this.weather != Weather.NORMAL) {
+			// TODO log
+		}
+	}
+
+	private void sendPokemon(Player player, PokemonInstance pi) {
+		PokemonBattleInstance pbi = new PokemonBattleInstance(pi);
+		activePokemons.put(player, pbi);
+		// TODO log
+	}
+
+	private void withdrawPokemon(Player player) {
+		activePokemons.put(player, null);
+		// TODO log
+	}
+
+	@Override
+	public boolean isActive() {
+		return active;
 	}
 
 	@Override
@@ -47,9 +99,10 @@ public class RegularBattle extends AbstractBattle {
 		});
 		// now that we've determined order, let's execute the turns
 		for (Turn turn : turnsInOrder) {
-			PokemonInstance defendingPkmn = (turn.getParent() == players[0]) ? activePokemons
+			PokemonBattleInstance defendingPkmn = (turn.getParent() == players[0]) ? activePokemons
 					.get(players[1]) : activePokemons.get(players[0]);
-			PokemonInstance attackingPkmn = activePokemons.get(turn.getParent());
+			PokemonBattleInstance attackingPkmn = activePokemons.get(turn
+					.getParent());
 			Player player = turn.getParent();
 
 			switch (turn.getOption()) {
@@ -57,8 +110,9 @@ public class RegularBattle extends AbstractBattle {
 				if (runningEnabled) { // TODO there are moves that can prevent
 					// escaping
 					// see http://www.serebii.net/games/escape.shtml
-					if (defendingPkmn.getAbilityId() != 71
-							|| attackingPkmn.isOfType(Type.FLYING)
+					if (defendingPkmn.getInstance().getAbilityId() != 71
+							|| attackingPkmn.getInstance().getSpecies()
+									.isOfType(Type.FLYING)
 							|| attackingPkmn.isFlying()
 							|| attackingPkmn.holdsItemInstanceOf(272)) {
 						// 71 == 'arena trap'; but still works when flying-type
@@ -67,15 +121,16 @@ public class RegularBattle extends AbstractBattle {
 						// TODO implement escape
 					} else {
 						// TODO log running is not possible because of arena
-						// trap 
+						// trap
 					}
 				} else {
 					// TODO log running is not possible (trainer battle etc.)
 				}
 				break;
 			case SWAP_PKMN:
-				if (defendingPkmn.getAbilityId() != 71
-						|| attackingPkmn.isOfType(Type.FLYING)
+				if (defendingPkmn.getInstance().getAbilityId() != 71
+						|| attackingPkmn.getInstance().getSpecies()
+								.isOfType(Type.FLYING)
 						|| attackingPkmn.isFlying()
 						|| attackingPkmn.holdsItemInstanceOf(272)) {
 					// TODO there are moves that can prevent swapping
@@ -99,7 +154,7 @@ public class RegularBattle extends AbstractBattle {
 				// TODO implement item usage
 				break;
 			case FIGHT:
-				if (!attackingPkmn.isUsable()) {
+				if (!attackingPkmn.getInstance().isUsable()) {
 					// pkmn fainted before it could attack
 					continue;
 				}
@@ -114,7 +169,7 @@ public class RegularBattle extends AbstractBattle {
 					 * level
 					 */
 					// int division will automatically floor
-					int level = attackingPkmn.getLevel() * 2 / 5 + 2;
+					int level = attackingPkmn.getInstance().getLevel() * 2 / 5 + 2;
 
 					/*
 					 * base power
@@ -188,7 +243,7 @@ public class RegularBattle extends AbstractBattle {
 					 */
 					// TODO brn is always 1 if the attacker's ability is 'guts'
 					double brn = (turn.getMove().getDamageClass() == Move.DamageClass.PHYSICAL && attackingPkmn
-							.getStatusProblem() == StatusProblem.BURN) ? 0.5
+							.getInstance().getStatusProblem() == StatusProblem.BURN) ? 0.5
 							: 1;
 					// TODO see
 					// http://www.smogon.com/dp/articles/damage_formula#mod1
@@ -226,13 +281,16 @@ public class RegularBattle extends AbstractBattle {
 					 */
 					// TODO stab is 2 if the attaacker's ability is adaptability
 					double stab = turn.getMove().getType()
-							.getStab(attackingPkmn);
+							.getStab(attackingPkmn.getInstance().getSpecies());
 
 					/*
 					 * TYPE1 and TYPE2
 					 */
-					double eff = turn.getMove().getType()
-							.getEffectivenessOver(defendingPkmn);
+					double eff = turn
+							.getMove()
+							.getType()
+							.getEffectivenessOver(
+									defendingPkmn.getInstance().getSpecies());
 
 					/*
 					 * MOD3
@@ -250,7 +308,7 @@ public class RegularBattle extends AbstractBattle {
 							* mod1) + 2)
 							* critical * mod2)
 							* r / 100);
-					defendingPkmn.applyDamage(damage);
+					defendingPkmn.getInstance().applyDamage(damage);
 					// TODO log!
 					break;
 				// TODO implement other effectIds
@@ -260,59 +318,5 @@ public class RegularBattle extends AbstractBattle {
 				break;
 			}
 		}
-	}
-
-	@Override
-	public void start() {
-		/*
-		 * select starting pkmns
-		 */
-		for (Player player : players) {
-			for (PokemonInstance p : player.getTeam()) {
-				if (p.isUsable()) {
-					this.sendPokemon(player, p);
-					break;
-				}
-			}
-			// Exception handling
-			if (activePokemons.get(player) == null) {
-				throw new RuntimeException(player.toString()
-						+ " has no usable pkmns!");
-			}
-		}
-		/*
-		 * activate abilities
-		 */
-		for (Player p : players) {
-			int ability = activePokemons.get(p).getAbilityId();
-			switch (ability) {
-			// TODO implement abilities
-			default:
-			}
-		}
-		/*
-		 * log weather if not normal
-		 */
-		if (this.weather != Weather.NORMAL) {
-			// TODO log
-		}
-	}
-
-	private void sendPokemon(Player player, PokemonInstance p) {
-		activePokemons.put(player, p);
-		// TODO log
-	}
-
-	private void withdrawPokemon(Player player) {
-		// reset temporary stat modifiers
-		java.util.Arrays.fill(activePokemons.get(player)
-				.getTemporaryStatModifiers(), 0);
-		activePokemons.put(player, null);
-		// TODO log
-	}
-
-	@Override
-	public boolean isActive() {
-		return active;
 	}
 }
