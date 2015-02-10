@@ -10,7 +10,7 @@ package de.darthpumpkin.pkmnlib;
  */
 public class PokemonBuilder {
 
-	private Pokemon pokemon;
+	private PokemonInstance pokemon;
 
 	/**
 	 * should only be called by PokemonFactory.
@@ -18,18 +18,18 @@ public class PokemonBuilder {
 	 * @param pokemon
 	 *            the freshly inflated pokemon
 	 */
-	PokemonBuilder(Pokemon pokemon) {
+	PokemonBuilder(PokemonInstance pokemon) {
 		this.pokemon = pokemon;
 	}
 
 	// TODO add methods for setting attributes
 
 	/**
-	 * call this method to generate the Pokemon.
+	 * call this method to generate the PokemonInstance.
 	 * 
 	 * @return the pokemon represented by this builder
 	 */
-	public Pokemon makePokemon() {
+	public PokemonInstance makePokemon() {
 		return pokemon;
 	}
 }

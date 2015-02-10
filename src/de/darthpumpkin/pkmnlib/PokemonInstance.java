@@ -2,7 +2,7 @@ package de.darthpumpkin.pkmnlib;
 
 import java.io.Serializable;
 
-// TODO javadoc
+// TODO javadoc is outdated, see usage example
 /**
  * To make a pokemon, use a PokemonFactory implementation to create a
  * PokemonBuilder. Use latter to specify the desired attributes, then call
@@ -13,44 +13,18 @@ import java.io.Serializable;
  */
 
 @SuppressWarnings("serial")
-public class Pokemon implements Serializable, ItemContainer {
-
-	/*
-	 * nested classes and enums
-	 */
-	public enum StatusProblem {
-		// TODO check if there is an order for status problems in the db and if
-		// so, is it different from this one?
-		BURN, FREEZE, PARALYSIS, POISON, BAD_POISON
-	}
-
-	public enum Stat {
-		HP(0), ATK(1), DEF(2), SPATK(3), SPDEF(4), SPEED(5), ACCURACY(6), EVASION(
-				7);
-		private int index;
-
-		Stat(int index) {
-			this.index = index;
-		}
-
-		public int i() {
-			return index;
-		}
-	}
+public class PokemonInstance implements Serializable, ItemContainer {
 
 	/*
 	 * fields
 	 */
-	private int[] baseStats;
-	private int[] currentStats; // those you would see in the game
-	private int[] temporaryStatModifiers; // from -6 to 6; reset after
-											// switch-out
+	private PokemonSpecies species;
+	private int[] currentStats; // TODO compute when neccessary
 	private int level;
-	private Type[] types;
+	private int experiencePoints;	// those obtained since last level-up
 	private StatusProblem statusProblem; // null if there is none
 	// TODO there are hidden abilities (...?)
 	private int abilityId;
-	private boolean flying; // in the air by using the move 'fly'
 
 	/*
 	 * methods
@@ -91,30 +65,11 @@ public class Pokemon implements Serializable, ItemContainer {
 		}
 	}
 
-	/**
-	 * 
-	 * @param type
-	 * @return true if one of the pkmn's types equals the Type passed as
-	 *         argument.
-	 */
-	public boolean isOfType(Type type) {
-		for (Type t : types) {
-			if (t == type) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	/*
 	 * getters and setters
 	 */
-	public int[] getBaseStats() {
-		return baseStats;
-	}
-
-	public void setBaseStats(int[] baseStats) {
-		this.baseStats = baseStats;
+	public PokemonSpecies getSpecies() {
+		return this.species;
 	}
 
 	/**
@@ -135,45 +90,12 @@ public class Pokemon implements Serializable, ItemContainer {
 		this.currentStats = currentStats;
 	}
 
-	public int[] getTemporaryStatModifiers() {
-		return temporaryStatModifiers;
-	}
-
-	public void setTemporaryStatModifiers(int[] temporaryStatModifiers) {
-		this.temporaryStatModifiers = temporaryStatModifiers;
-	}
-
-	/**
-	 * the actual value of the stat right wihtin the battle, respecting all
-	 * temporary changes including +2 from swords dance etc.
-	 * 
-	 * @param stat
-	 *            the stat you want computed
-	 * @return
-	 */
-	public float getCurrent(Stat stat) {
-		int c = currentStats[stat.i()];
-		int t = temporaryStatModifiers[stat.i()];
-		if (t >= 0) {
-			return c * (2 + t) / 2;
-		}
-		return c * 2 / (2 - t);
-	}
-
 	public int getLevel() {
 		return this.level;
 	}
 
 	public void setLevel(int level) {
 		this.level = level;
-	}
-
-	public Type[] getTypes() {
-		return types;
-	}
-
-	public void setTypes(Type[] types) {
-		this.types = types;
 	}
 
 	/**
@@ -201,10 +123,6 @@ public class Pokemon implements Serializable, ItemContainer {
 		this.abilityId = abilityId;
 	}
 
-	public boolean isFlying() {
-		return flying;
-	}
-
 	@Override
 	public boolean holdsItem(Item item) {
 		// TODO Auto-generated method stub
@@ -215,6 +133,16 @@ public class Pokemon implements Serializable, ItemContainer {
 	public boolean holdsItemInstanceOf(int id) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	/**
+	 * computes the current stats respecting the basic stats, level, eVs and dVs
+	 * 
+	 * @return 
+	 */
+	public int[] getStats() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

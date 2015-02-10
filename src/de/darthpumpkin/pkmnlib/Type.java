@@ -34,7 +34,7 @@ public enum Type {
 	 *            the defending pkmn
 	 * @return effectiveness as float in the interval [0.25, 2]
 	 */
-	public float getEffectivenessOver(Pokemon defendingPkmn) {
+	public float getEffectivenessOver(PokemonSpecies defendingPkmn) {
 		return getEffectivenessOver(defendingPkmn.getTypes());
 	}
 
@@ -43,7 +43,7 @@ public enum Type {
 	 * granted when a pkmn's type equals the move's type
 	 * 
 	 * @param attacking
-	 *            the types of the attacking Pokemon
+	 *            the types of the attacking PokemonInstance
 	 * @return 1.5f if stab, else 1
 	 */
 	public float getStab(Type[] attacking) {
@@ -55,10 +55,10 @@ public enum Type {
 	 * granted when a pkmn's type equals the move's type
 	 * 
 	 * @param attacking
-	 *            the attacking Pokemon
+	 *            the attacking PokemonInstance
 	 * @return 1.5f if stab, else 1
 	 */
-	public float getStab(Pokemon attacking) {
+	public float getStab(PokemonSpecies attacking) {
 		return getStab(attacking.getTypes());
 	}
 

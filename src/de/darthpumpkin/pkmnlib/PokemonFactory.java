@@ -1,7 +1,7 @@
 package de.darthpumpkin.pkmnlib;
 
 /**
- * Generates Pokemon, given an identifier. Implementations of this class must
+ * Generates PokemonInstance, given an identifier. Implementations of this class must
  * translate database information into a PokemonBuilder object. E.g. it could
  * use the on-board SQLite db by veekun. As this database handling is
  * platform-specific and must be efficient, this interface has to be implemented

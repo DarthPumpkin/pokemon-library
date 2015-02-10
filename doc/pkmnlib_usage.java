@@ -6,7 +6,7 @@
 
 //"a wild rattata appeared!"
 //1.Build a rattata instance
-PokemonFactory factory = new PkmnFactoryImpl();
+PokemonSpeciesFactory factory = new PkmnFactoryImpl();
 PokemonSpecies rattataSpecies = factory.getSpeciesByName("Rattata");
 PokemonInstanceBuilder rattataBuilder = new PokemonInstanceBuilder(rattataSpecies);
 rattataBuilder.setLevel(3);

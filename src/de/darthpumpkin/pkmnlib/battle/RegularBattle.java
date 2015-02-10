@@ -7,12 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import de.darthpumpkin.pkmnlib.*;
-import de.darthpumpkin.pkmnlib.Pokemon.Stat;
 
 @SuppressWarnings("serial")
 public class RegularBattle extends AbstractBattle {
 
-	private Map<Player, Pokemon> activePokemons;
+	private Map<Player, PokemonInstance> activePokemons;
 	private boolean runningEnabled;
 	private Map<Player, Boolean> expEnabled;
 	private boolean active;
@@ -48,9 +47,9 @@ public class RegularBattle extends AbstractBattle {
 		});
 		// now that we've determined order, let's execute the turns
 		for (Turn turn : turnsInOrder) {
-			Pokemon defendingPkmn = (turn.getParent() == players[0]) ? activePokemons
+			PokemonInstance defendingPkmn = (turn.getParent() == players[0]) ? activePokemons
 					.get(players[1]) : activePokemons.get(players[0]);
-			Pokemon attackingPkmn = activePokemons.get(turn.getParent());
+			PokemonInstance attackingPkmn = activePokemons.get(turn.getParent());
 			Player player = turn.getParent();
 
 			switch (turn.getOption()) {
@@ -81,7 +80,7 @@ public class RegularBattle extends AbstractBattle {
 						|| attackingPkmn.holdsItemInstanceOf(272)) {
 					// TODO there are moves that can prevent swapping
 					// see http://www.serebii.net/games/escape.shtml
-					Pokemon p = player.getTeam()[turns.get(player)
+					PokemonInstance p = player.getTeam()[turns.get(player)
 							.getTargetId()]; // targetId is the index of the
 												// pokemon to be sent in
 					if (!p.isUsable()) {
@@ -150,8 +149,8 @@ public class RegularBattle extends AbstractBattle {
 					 * [Sp]Atk
 					 */
 					double atkStat = (turn.getMove().getDamageClass() == Move.DamageClass.PHYSICAL) ? attackingPkmn
-							.getCurrent(Pokemon.Stat.ATK) : attackingPkmn
-							.getCurrent(Pokemon.Stat.SPATK);
+							.getCurrent(Stat.ATK) : attackingPkmn
+							.getCurrent(Stat.SPATK);
 					// TODO see
 					// http://www.smogon.com/dp/articles/damage_formula#atk_abilities
 					double abilityModifier = 1d;
@@ -170,8 +169,8 @@ public class RegularBattle extends AbstractBattle {
 					 * [Sp]Def
 					 */
 					double defStat = (turn.getMove().getDamageClass() == Move.DamageClass.PHYSICAL) ? defendingPkmn
-							.getCurrent(Pokemon.Stat.DEF) : defendingPkmn
-							.getCurrent(Pokemon.Stat.SPDEF);
+							.getCurrent(Stat.DEF) : defendingPkmn
+							.getCurrent(Stat.SPDEF);
 					// TODO see
 					// http://www.smogon.com/dp/articles/damage_formula#defense
 					double sx = 1d;
@@ -189,7 +188,7 @@ public class RegularBattle extends AbstractBattle {
 					 */
 					// TODO brn is always 1 if the attacker's ability is 'guts'
 					double brn = (turn.getMove().getDamageClass() == Move.DamageClass.PHYSICAL && attackingPkmn
-							.getStatusProblem() == Pokemon.StatusProblem.BURN) ? 0.5
+							.getStatusProblem() == StatusProblem.BURN) ? 0.5
 							: 1;
 					// TODO see
 					// http://www.smogon.com/dp/articles/damage_formula#mod1
@@ -269,7 +268,7 @@ public class RegularBattle extends AbstractBattle {
 		 * select starting pkmns
 		 */
 		for (Player player : players) {
-			for (Pokemon p : player.getTeam()) {
+			for (PokemonInstance p : player.getTeam()) {
 				if (p.isUsable()) {
 					this.sendPokemon(player, p);
 					break;
@@ -299,7 +298,7 @@ public class RegularBattle extends AbstractBattle {
 		}
 	}
 
-	private void sendPokemon(Player player, Pokemon p) {
+	private void sendPokemon(Player player, PokemonInstance p) {
 		activePokemons.put(player, p);
 		// TODO log
 	}
