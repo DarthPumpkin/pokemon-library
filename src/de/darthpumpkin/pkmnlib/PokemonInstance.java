@@ -4,8 +4,8 @@ import java.io.Serializable;
 
 // TODO javadoc is outdated, see usage example and ER diagram
 /**
- * To make a pokemon, use a PokemonFactory implementation to create a
- * PokemonBuilder. Use latter to specify the desired attributes, then call
+ * To make a pokemon, use a PokemonSpeciesFactory implementation to create a
+ * PokemonInstanceBuilder. Use latter to specify the desired attributes, then call
  * makePokemon().
  * 
  * @author dominik
@@ -30,6 +30,14 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	private int gender;
 	private String nickname;
 	private Move[] moves;
+
+	/**
+	 * should only be called by PokemonInstanceBuilder
+	 * @param species
+	 */
+	/*package*/ PokemonInstance(PokemonSpecies species) {
+		this.species = species;
+	}
 
 	/*
 	 * methods

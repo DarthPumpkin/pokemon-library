@@ -2,14 +2,38 @@ package de.darthpumpkin.pkmnlib;
 
 import java.io.Serializable;
 
+/**
+ * use a PokemonSpeciesFactory to create a PokemonSpecies object.
+ * @author dominik
+ *
+ */
 public class PokemonSpecies implements Serializable {
 
+	private int baseFriendship;
 	private int[] baseStats;
-	private Type[] types;
+	private int catchRate;
+	private int[] eggGroups;
+	private int[] evYield;	//how many EV gets the defeater of this pkmn
 	// from 1 to 6, see table growth_rates and growth_rate_prose as well as
 	// bulbapedia.net or pokewiki.de
+	private int genderRate;
 	private int growthRate;
-	private int catchRate;
+	private int height;
+	private int speciesId;
+	private Type[] types;
+	private int weight;
+	
+	/*package*/ PokemonSpecies() {
+		
+	}
+
+	public int getBaseFriendship() {
+		return baseFriendship;
+	}
+
+	public void setBaseFriendship(int baseFriendship) {
+		this.baseFriendship = baseFriendship;
+	}
 
 	public int[] getBaseStats() {
 		return baseStats;
@@ -19,12 +43,36 @@ public class PokemonSpecies implements Serializable {
 		this.baseStats = baseStats;
 	}
 
-	public Type[] getTypes() {
-		return types;
+	public int getCatchRate() {
+		return catchRate;
 	}
 
-	public void setTypes(Type[] types) {
-		this.types = types;
+	public void setCatchRate(int catchRate) {
+		this.catchRate = catchRate;
+	}
+
+	public int[] getEvYield() {
+		return evYield;
+	}
+
+	public void setEvYield(int[] evYield) {
+		this.evYield = evYield;
+	}
+
+	public int[] getEggGroups() {
+		return eggGroups;
+	}
+
+	public void setEggGroups(int[] eggGroups) {
+		this.eggGroups = eggGroups;
+	}
+
+	public int getGenderRate() {
+		return genderRate;
+	}
+
+	public void setGenderRate(int genderRate) {
+		this.genderRate = genderRate;
 	}
 
 	public int getGrowthRate() {
@@ -35,12 +83,36 @@ public class PokemonSpecies implements Serializable {
 		this.growthRate = growthRate;
 	}
 
-	public int getCatchRate() {
-		return catchRate;
+	public int getHeight() {
+		return height;
 	}
 
-	public void setCatchRate(int catchRate) {
-		this.catchRate = catchRate;
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public int getSpeciesId() {
+		return speciesId;
+	}
+
+	public void setSpeciesId(int speciesId) {
+		this.speciesId = speciesId;
+	}
+
+	public Type[] getTypes() {
+		return types;
+	}
+
+	public void setTypes(Type[] types) {
+		this.types = types;
+	}
+
+	public int getWeight() {
+		return weight;
+	}
+
+	public void setWeight(int weight) {
+		this.weight = weight;
 	}
 
 	/**

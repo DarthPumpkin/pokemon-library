@@ -2,24 +2,18 @@ package de.darthpumpkin.pkmnlib;
 
 // TODO improve javadoc
 /**
- * Wrapper class for conveniently generating pkmns. Offers the possibility to
- * set attributes in a chain.
+ * Wrapper class for conveniently generating a PokemonInstance. Offers the
+ * possibility to set attributes in a chain.
  * 
  * @author DarthPumpkin
  * 
  */
-public class PokemonBuilder {
+public class PokemonInstanceBuilder {
 
 	private PokemonInstance pokemon;
 
-	/**
-	 * should only be called by PokemonFactory.
-	 * 
-	 * @param pokemon
-	 *            the freshly inflated pokemon
-	 */
-	PokemonBuilder(PokemonInstance pokemon) {
-		this.pokemon = pokemon;
+	PokemonInstanceBuilder(PokemonSpecies species) {
+		this.pokemon = new PokemonInstance(species);
 	}
 
 	// TODO add methods for setting attributes
