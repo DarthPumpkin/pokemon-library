@@ -2,7 +2,7 @@ package de.darthpumpkin.pkmnlib;
 
 import java.io.Serializable;
 
-// TODO javadoc is outdated, see usage example
+// TODO javadoc is outdated, see usage example and ER diagram
 /**
  * To make a pokemon, use a PokemonFactory implementation to create a
  * PokemonBuilder. Use latter to specify the desired attributes, then call
@@ -19,12 +19,17 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	 * fields
 	 */
 	private PokemonSpecies species;
-	private int[] currentStats; // TODO compute when neccessary
 	private int level;
-	private int experiencePoints;	// those obtained since last level-up
+	private int experiencePoints; // those obtained since last level-up
 	private StatusProblem statusProblem; // null if there is none
 	// TODO there are hidden abilities (...?)
 	private int abilityId;
+	private int[] effortValues;
+	private int[] deterValues;
+	// TODO int or enum? check db
+	private int gender;
+	private String nickname;
+	private Move[] moves;
 
 	/*
 	 * methods
@@ -58,7 +63,7 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	 *            damage to be inflicted
 	 */
 	public void applyDamage(int damage) {
-		int hpStat = this.currentStats[Stat.HP.i()];
+		int hpStat = this.getCurrentStats()[Stat.HP.i()];
 		hpStat -= damage;
 		if (hpStat < 0) {
 			hpStat = 0;
@@ -68,6 +73,58 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	/*
 	 * getters and setters
 	 */
+	public int getExperiencePoints() {
+		return experiencePoints;
+	}
+
+	public void setExperiencePoints(int experiencePoints) {
+		this.experiencePoints = experiencePoints;
+	}
+
+	public int[] getEffortValues() {
+		return effortValues;
+	}
+
+	public void setEffortValues(int[] effortValues) {
+		this.effortValues = effortValues;
+	}
+
+	public int[] getDeterValues() {
+		return deterValues;
+	}
+
+	public void setDeterValues(int[] deterValues) {
+		this.deterValues = deterValues;
+	}
+
+	public int getGender() {
+		return gender;
+	}
+
+	public void setGender(int gender) {
+		this.gender = gender;
+	}
+
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public Move[] getMoves() {
+		return moves;
+	}
+
+	public void setMoves(Move[] moves) {
+		this.moves = moves;
+	}
+
+	public void setSpecies(PokemonSpecies species) {
+		this.species = species;
+	}
+
 	public PokemonSpecies getSpecies() {
 		return this.species;
 	}
@@ -78,16 +135,8 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	 * @return
 	 */
 	public int[] getCurrentStats() {
-		return currentStats;
-	}
-
-	/**
-	 * those you would see in the game when cheking the poke's info
-	 * 
-	 * @return
-	 */
-	public void setCurrentStats(int[] currentStats) {
-		this.currentStats = currentStats;
+		// TODO compute current stats
+		return null;
 	}
 
 	public int getLevel() {
@@ -138,7 +187,7 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	/**
 	 * computes the current stats respecting the basic stats, level, eVs and dVs
 	 * 
-	 * @return 
+	 * @return
 	 */
 	public int[] getStats() {
 		// TODO Auto-generated method stub

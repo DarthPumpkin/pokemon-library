@@ -8,6 +8,7 @@ public class PokemonBattleInstance implements Serializable, ItemContainer {
 	private int[] temporaryStatModifiers; // from -6 to 6; reset after
 											// switch-out
 	private boolean flying; // in the air by using the move 'fly'
+	private boolean confused;
 	
 	public PokemonBattleInstance(PokemonInstance instance) {
 		this.instance = instance;
@@ -32,7 +33,19 @@ public class PokemonBattleInstance implements Serializable, ItemContainer {
 	public boolean isFlying() {
 		return flying;
 	}
+
+	public void setFlying(boolean flying) {
+		this.flying = flying;
+	}
 	
+	public boolean isConfused() {
+		return confused;
+	}
+
+	public void setConfused(boolean confused) {
+		this.confused = confused;
+	}
+
 	@Override
 	public void remove(Item item) {
 		// TODO Auto-generated method stub
