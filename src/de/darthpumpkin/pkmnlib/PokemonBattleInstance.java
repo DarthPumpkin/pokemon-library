@@ -2,6 +2,16 @@ package de.darthpumpkin.pkmnlib;
 
 import java.io.Serializable;
 
+/**
+ * Represents a temporary image of a {@link PokemonInstance} for use in a
+ * battle. Only battle-related attributes here. Objects of this class should
+ * only exist while the related {@PokemonInstance} is an
+ * active participant in a battle and should be destructed upon switching out or
+ * fainting.
+ * 
+ * @author dominik
+ * 
+ */
 public class PokemonBattleInstance implements Serializable, ItemContainer {
 
 	private PokemonInstance instance;
@@ -9,11 +19,15 @@ public class PokemonBattleInstance implements Serializable, ItemContainer {
 											// switch-out
 	private boolean flying; // in the air by using the move 'fly'
 	private boolean confused;
-	
+
 	public PokemonBattleInstance(PokemonInstance instance) {
 		this.instance = instance;
 	}
 
+	/**
+	 * 
+	 * @return the {@link PokemonInstance} represented by this battle instance.
+	 */
 	public PokemonInstance getInstance() {
 		return instance;
 	}
@@ -37,7 +51,7 @@ public class PokemonBattleInstance implements Serializable, ItemContainer {
 	public void setFlying(boolean flying) {
 		this.flying = flying;
 	}
-	
+
 	public boolean isConfused() {
 		return confused;
 	}
@@ -87,5 +101,4 @@ public class PokemonBattleInstance implements Serializable, ItemContainer {
 		return c * 2 / (2 - t);
 	}
 
-	
 }

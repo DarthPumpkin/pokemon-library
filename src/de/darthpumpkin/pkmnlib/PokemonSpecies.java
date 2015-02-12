@@ -3,7 +3,9 @@ package de.darthpumpkin.pkmnlib;
 import java.io.Serializable;
 
 /**
- * use a PokemonSpeciesFactory to create a PokemonSpecies object.
+ * Use a {@link PokemonSpeciesFactory} to create a PokemonSpecies
+ * object.</br></br> Represents a pokemon species (Bulbasaur, Rattata, ...).
+ * Attributes are those who are equal for all instances of the species.
  * 
  * @author dominik
  * 
