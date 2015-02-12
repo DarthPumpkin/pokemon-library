@@ -4,8 +4,9 @@ import java.io.Serializable;
 
 /**
  * use a PokemonSpeciesFactory to create a PokemonSpecies object.
+ * 
  * @author dominik
- *
+ * 
  */
 public class PokemonSpecies implements Serializable {
 
@@ -13,7 +14,7 @@ public class PokemonSpecies implements Serializable {
 	private int[] baseStats;
 	private int catchRate;
 	private int[] eggGroups;
-	private int[] evYield;	//how many EV gets the defeater of this pkmn
+	private int[] evYield; // how many EV gets the defeater of this pkmn
 	// from 1 to 6, see table growth_rates and growth_rate_prose as well as
 	// bulbapedia.net or pokewiki.de
 	private int genderRate;
@@ -22,9 +23,9 @@ public class PokemonSpecies implements Serializable {
 	private int speciesId;
 	private Type[] types;
 	private int weight;
-	
-	/*package*/ PokemonSpecies() {
-		
+
+	/* package */PokemonSpecies() {
+
 	}
 
 	public int getBaseFriendship() {
@@ -120,8 +121,14 @@ public class PokemonSpecies implements Serializable {
 	 * @param type
 	 * @return true if one of the pkmn's types equals the Type passed as
 	 *         argument.
+	 * @throws IllegalArgumentException
+	 *             if type == null. Do not use this method to detect whether the
+	 *             species is a dual-type.
 	 */
 	public boolean isOfType(Type type) {
+		if (type == null) {
+			throw new IllegalArgumentException("null is not accepted as Type");
+		}
 		for (Type t : types) {
 			if (t == type) {
 				return true;
