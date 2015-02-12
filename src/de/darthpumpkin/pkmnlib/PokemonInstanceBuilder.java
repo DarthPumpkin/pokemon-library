@@ -12,7 +12,7 @@ public class PokemonInstanceBuilder {
 
 	private PokemonInstance pokemon;
 
-	PokemonInstanceBuilder(PokemonSpecies species) {
+	public PokemonInstanceBuilder(PokemonSpecies species) {
 		this.pokemon = new PokemonInstance(species);
 	}
 

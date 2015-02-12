@@ -2,7 +2,6 @@ package de.darthpumpkin.pkmnlib;
 
 import java.io.Serializable;
 
-// TODO javadoc is outdated, see usage example and ER diagram
 /**
  * Use a {@link PokemonInstanceBuilder} to create a PokemonInstance from a
  * {@link PokemonSpecies}.</br></br> Represents an instance of a species, that
@@ -24,7 +23,7 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	private int gender;
 	private int level;
 	private Move[] moves;
-	private String nickname;
+	private String nickname;	// null if not set
 	private PokemonSpecies species;
 	private StatusProblem statusProblem; // null if there is none
 
