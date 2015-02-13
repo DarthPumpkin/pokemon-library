@@ -69,9 +69,8 @@ public class PokemonInstanceBuilderTest {
 		assertTrue(abilityId >= minValidAbilityId
 				&& abilityId <= maxValidAbilityId);
 		// check deterValues
-		// TODO verify that 34 is max
 		int minDeterValue = 0;
-		int maxDeterValue = 34;
+		int maxDeterValue = 31;
 		int[] deterValues = i.getDeterValues();
 		assertNotNull(deterValues);
 		for (int dv : deterValues) {

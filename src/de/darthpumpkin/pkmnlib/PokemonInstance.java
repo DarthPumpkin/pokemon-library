@@ -16,6 +16,7 @@ public class PokemonInstance implements Serializable, ItemContainer {
 
 	// TODO there are hidden abilities (...?)
 	private int abilityId;
+	private int currentHp;
 	private int[] deterValues;
 	private int[] effortValues;
 	private int experiencePoints; // those obtained since last level-up
@@ -43,10 +44,9 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	 *            damage to be inflicted
 	 */
 	public void applyDamage(int damage) {
-		int hpStat = this.getCurrentStats()[Stat.HP.i()];
-		hpStat -= damage;
-		if (hpStat < 0) {
-			hpStat = 0;
+		currentHp -= damage;
+		if (currentHp < 0) {
+			currentHp = 0;
 		}
 	}
 
@@ -78,14 +78,8 @@ public class PokemonInstance implements Serializable, ItemContainer {
 		return abilityId;
 	}
 
-	/**
-	 * those you would see in the game when checking the poke's info
-	 * 
-	 * @return
-	 */
-	public int[] getCurrentStats() {
-		// TODO compute current stats
-		return null;
+	public int getCurrentHp() {
+		return currentHp;
 	}
 
 	public int[] getDeterValues() {
@@ -96,9 +90,6 @@ public class PokemonInstance implements Serializable, ItemContainer {
 		return effortValues;
 	}
 
-	/*
-	 * getters and setters
-	 */
 	public int getExperiencePoints() {
 		return experiencePoints;
 	}
@@ -123,9 +114,6 @@ public class PokemonInstance implements Serializable, ItemContainer {
 		return this.species;
 	}
 
-	/*
-	 * getters and setters
-	 */
 	/**
 	 * computes the current stats respecting the basic stats, level, eVs and dVs
 	 * 
@@ -156,6 +144,10 @@ public class PokemonInstance implements Serializable, ItemContainer {
 
 	public void setAbilityId(int abilityId) {
 		this.abilityId = abilityId;
+	}
+
+	public void setCurrentHp(int currentHp) {
+		this.currentHp = currentHp;
 	}
 
 	public void setDeterValues(int[] deterValues) {

@@ -12,6 +12,7 @@ import java.io.Serializable;
  */
 public class PokemonSpecies implements Serializable {
 
+	private int[] abilities; //0-1: regular, 2-3: hidden
 	private int baseFriendship;
 	private int[] baseStats;
 	private int catchRate;
@@ -28,6 +29,14 @@ public class PokemonSpecies implements Serializable {
 
 	/* package */PokemonSpecies() {
 
+	}
+
+	public int[] getAbilities() {
+		return abilities;
+	}
+
+	public void setAbilities(int[] abilities) {
+		this.abilities = abilities;
 	}
 
 	public int getBaseFriendship() {
