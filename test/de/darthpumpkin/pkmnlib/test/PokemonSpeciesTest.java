@@ -79,7 +79,7 @@ public class PokemonSpeciesTest {
 	 * {@link de.darthpumpkin.pkmnlib.PokemonSpecies#isOfType(de.darthpumpkin.pkmnlib.Type)}
 	 * for the correct handling of null arguments
 	 */
-	@Test(expected=IllegalArgumentException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testIsOfTypeNull() {
 		species.isOfType(null);
 	}

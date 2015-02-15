@@ -23,25 +23,11 @@ public class PokemonInstanceBuilder {
 		// abilitiy: choose randomly between non-hidden
 		int[] sAbilities = species.getAbilities();
 		int n = sAbilities[1] == 0 ? 1 : 2;
-		int i = (int) Math.floor(Math.random()*n);
+		int i = (int) Math.floor(Math.random() * n);
 		p.setAbilityId(sAbilities[i]);
 		p.setExperiencePoints(0);
 		p.setLevel(5);
-		// determine four latest learnable moves
-		// TODO Test the binary search thing, probably white-box!
-		Move[] moves;
-		int currentLevel = p.getLevel();
-		int[] levels = p.getSpecies().getLevelsForMovesLearnableByLevel();
-		int index = Arrays.binarySearch(levels, currentLevel);
-		if (index < 0) {
-			// see javadoc of Arrays.binarySearch(..)
-			index = 1 - index;
-		}
-		Move[] allMoves = p.getSpecies().getMovesLearnableByLevel();
-		moves = Arrays.copyOfRange(allMoves, (index >= 4) ? index - 4 : 0, index);
-		moves = Arrays.copyOf(moves, 4);	//in case index < 3
-		p.setMoves(moves);
-		
+
 		// TODO add more default values
 	}
 
@@ -92,7 +78,7 @@ public class PokemonInstanceBuilder {
 		p.setEffortValues(eVs);
 		return this;
 	}
-	
+
 	public PokemonInstanceBuilder setLevel(int level) {
 		if (level <= 0 || level > 100) {
 			throw new IllegalArgumentException(level + " is not a valid level");
@@ -100,7 +86,7 @@ public class PokemonInstanceBuilder {
 		p.setLevel(level);
 		return this;
 	}
-	
+
 	public PokemonInstanceBuilder setMoves(Move[] moves) {
 		if (moves == null) {
 			throw new IllegalArgumentException("null is not a valid argument");
@@ -121,6 +107,35 @@ public class PokemonInstanceBuilder {
 		// ability
 		if (p.getAbilityId() == 0) {
 			// need to set id -> choose randomly between non-hidden abilities
+		}
+		// moves
+		if (p.getMoves() == null) {
+			// determine four latest (by level) learnable moves
+			// TODO Test this, probably white-box!
+			Move[] moves;
+			int currentLevel = p.getLevel();
+			int[] levels = p.getSpecies().getLevelsForMovesLearnableByLevel();
+			// index of the latest learnable move
+			int index = Arrays.binarySearch(levels, currentLevel);
+			if (index < 0) {
+				// no new move at this level, see javadoc of
+				// Arrays.binarySearch(..)
+				index = -index - 1;
+			} else {
+				// new move(s) at this level
+				index++;
+				// in case there are muliple new moves at this level and binary
+				// search did not find the latest one
+				while (levels[index] == levels[index - 1]) {
+					// increment index until we've reached the last new move
+					index++;
+				}
+			}
+			Move[] allMoves = p.getSpecies().getMovesLearnableByLevel();
+			moves = Arrays.copyOfRange(allMoves, (index >= 4) ? index - 4 : 0,
+					index);
+			moves = Arrays.copyOf(moves, 4); // in case index < 3
+			p.setMoves(moves);
 		}
 		return p;
 	}

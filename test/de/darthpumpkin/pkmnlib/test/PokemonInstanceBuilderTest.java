@@ -3,6 +3,11 @@ package de.darthpumpkin.pkmnlib.test;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -67,16 +72,102 @@ public class PokemonInstanceBuilderTest {
 		bulbaBuilder.setDeterminantValues(dVs);
 		int[] eVs = new int[] { 50, 60, 70, 80, 90, 100 };
 		bulbaBuilder.setEffortValues(eVs);
-		int level = 15;
+		int level = 14;
 		bulbaBuilder.setLevel(level);
 		// Moves are not fully implemented yet
-//		bulbaBuilder.setMoves(moves)
+		// bulbaBuilder.setMoves(moves)
 		PokemonInstance i = bulbaBuilder.makePokemon();
 		assertTrue(i.getAbilityId() == abilityId);
 		assertTrue(i.getDeterValues().equals(dVs));
 		assertTrue(i.getEffortValues().equals(eVs));
-		assertTrue(i.getLevel() == 15);
+		assertTrue(i.getLevel() == level);
 		assertValidPokemonInstance(i);
+	}
+
+	/**
+	 * Tests if default moves are the four latest learnable ones. (level 1)
+	 */
+	@Test
+	public void testDefaultMoves1() {
+		bulbaBuilder.setLevel(1);
+		PokemonInstance i = bulbaBuilder.makePokemon();
+		assertValidPokemonInstance(i);
+		Move[] moves = i.getMoves();
+		List<Integer> indicesForNotNullMove = new ArrayList<Integer>();
+		for (int j = 0; j < 4; j++) {
+			if (moves[j] != null) {
+				indicesForNotNullMove.add(j);
+			}
+		}
+		int numOfNotNullEntries = indicesForNotNullMove.size();
+		assertTrue("There are " + numOfNotNullEntries
+				+ " not-null moves instead of " + 1, numOfNotNullEntries == 1);
+		assertTrue(moves[indicesForNotNullMove.get(0)].getId() == 33);
+	}
+
+	/**
+	 * Tests if default moves are the four latest learnable ones. (level 2)
+	 */
+	@Test
+	public void testDefaultMoves2() {
+		bulbaBuilder.setLevel(2);
+		PokemonInstance i = bulbaBuilder.makePokemon();
+		assertValidPokemonInstance(i);
+		Move[] moves = i.getMoves();
+		List<Integer> indicesForNotNullMove = new ArrayList<Integer>();
+		for (int j = 0; j < 4; j++) {
+			if (moves[j] != null) {
+				indicesForNotNullMove.add(j);
+			}
+		}
+		int numOfNotNullEntries = indicesForNotNullMove.size();
+		assertTrue("There are " + numOfNotNullEntries
+				+ " not-null moves instead of " + 1, numOfNotNullEntries == 1);
+		assertTrue(moves[indicesForNotNullMove.get(0)].getId() == 33);
+	}
+
+	/**
+	 * Tests if default moves are the four latest learnable ones. (level 3)
+	 */
+	@Test
+	public void testDefaultMoves3() {
+		bulbaBuilder.setLevel(3);
+		PokemonInstance i = bulbaBuilder.makePokemon();
+		assertValidPokemonInstance(i);
+		Move[] moves = i.getMoves();
+		List<Integer> indicesForNotNullMove = new ArrayList<Integer>();
+		for (int j = 0; j < 4; j++) {
+			if (moves[j] != null) {
+				indicesForNotNullMove.add(j);
+			}
+		}
+		int numOfNotNullEntries = indicesForNotNullMove.size();
+		assertTrue("There are " + numOfNotNullEntries
+				+ " not-null moves instead of " + 2, numOfNotNullEntries == 2);
+		assertTrue(moves[indicesForNotNullMove.get(0)].getId() == 33
+				|| moves[indicesForNotNullMove.get(0)].getId() == 45
+				&& (moves[indicesForNotNullMove.get(1)].getId() == 33 || moves[indicesForNotNullMove
+						.get(1)].getId() == 45));
+	}
+
+	/**
+	 * Tests if default moves are the four latest learnable ones. (level 13,
+	 * that is two new moves)
+	 */
+	@Test
+	public void testDefaultMovesTwoAtOnce() {
+		bulbaBuilder.setLevel(13);
+		PokemonInstance i = bulbaBuilder.makePokemon();
+		assertValidPokemonInstance(i);
+		Move[] moves = i.getMoves();
+		ArrayList<Integer> moveIds = new ArrayList<Integer>();
+		for (Move m : moves) {
+			moveIds.add(m.getId());
+		}
+		assertTrue(moveIds.contains(79));
+		assertTrue(moveIds.contains(77));
+		assertTrue(moveIds.contains(73));
+		assertTrue(moveIds.contains(22));
 	}
 
 	/**
@@ -98,8 +189,8 @@ public class PokemonInstanceBuilderTest {
 		int maxDeterValue = 31;
 		int[] deterValues = i.getDeterValues();
 		assertNotNull(deterValues);
+		assertTrue(deterValues.length == 6);
 		for (int dv : deterValues) {
-			assertNotNull(dv);
 			assertTrue(dv >= minDeterValue && dv <= maxDeterValue);
 		}
 		// check effortValues
@@ -107,6 +198,7 @@ public class PokemonInstanceBuilderTest {
 		int maxEffortValue = 255;
 		int[] eVs = i.getEffortValues();
 		assertNotNull(eVs);
+		assertTrue(eVs.length == 6);
 		int evSum = 0;
 		for (int ev : eVs) {
 			assertTrue(ev >= minEffortValue && ev <= maxEffortValue);
@@ -126,9 +218,7 @@ public class PokemonInstanceBuilderTest {
 		// check moves
 		Move[] moves = i.getMoves();
 		assertNotNull(moves);
-		for (Move move : moves) {
-			assertNotNull(move);
-		}
+		assertTrue(moves.length == 4);
 		// TODO assert that moves are learnable by species
 	}
 

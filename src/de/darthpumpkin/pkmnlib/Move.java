@@ -41,7 +41,7 @@ public class Move implements Serializable {
 	 * @param id
 	 */
 	public Move(int id) {
-		this.id = id;
+		this.setId(id);
 	}
 
 	public int getPriority() {
@@ -58,6 +58,14 @@ public class Move implements Serializable {
 
 	public DamageClass getDamageClass() {
 		return this.damageClass;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public int getPower() {
