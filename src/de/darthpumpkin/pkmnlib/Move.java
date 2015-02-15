@@ -20,6 +20,7 @@ public class Move implements Serializable {
 		STATUS, PHYSICAL, SPECIAL
 	}
 
+	private int id;
 	private String name;
 	private DamageClass damageClass;
 	private Type type;
@@ -35,7 +36,14 @@ public class Move implements Serializable {
 	private int priority;
 	private int target;
 	
-	
+	/**
+	 * Provisional constructor
+	 * @param id
+	 */
+	public Move(int id) {
+		this.id = id;
+	}
+
 	public int getPriority() {
 		return priority;
 	}

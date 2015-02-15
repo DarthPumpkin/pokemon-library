@@ -55,6 +55,31 @@ public class PokemonInstanceBuilderTest {
 	}
 
 	/**
+	 * Tests if {@link PokemonInstanceBuilder#makePokemon()} returns a fully
+	 * functional {@link PokemonInstance} when using all setters with valid
+	 * values.
+	 */
+	@Test
+	public void testMakePokemonAllRegular() {
+		int abilityId = 65;
+		bulbaBuilder.setAbilityId(abilityId); // overgrow
+		int[] dVs = new int[] { 14, 15, 16, 17, 18, 19 };
+		bulbaBuilder.setDeterminantValues(dVs);
+		int[] eVs = new int[] { 50, 60, 70, 80, 90, 100 };
+		bulbaBuilder.setEffortValues(eVs);
+		int level = 15;
+		bulbaBuilder.setLevel(level);
+		// Moves are not fully implemented yet
+//		bulbaBuilder.setMoves(moves)
+		PokemonInstance i = bulbaBuilder.makePokemon();
+		assertTrue(i.getAbilityId() == abilityId);
+		assertTrue(i.getDeterValues().equals(dVs));
+		assertTrue(i.getEffortValues().equals(eVs));
+		assertTrue(i.getLevel() == 15);
+		assertValidPokemonInstance(i);
+	}
+
+	/**
 	 * Tests if fields are valid and consistent.
 	 * 
 	 * @param i
@@ -84,8 +109,7 @@ public class PokemonInstanceBuilderTest {
 		assertNotNull(eVs);
 		int evSum = 0;
 		for (int ev : eVs) {
-			assertNotNull(ev);
-			assertTrue(ev >= minEffortValue && ev >= maxEffortValue);
+			assertTrue(ev >= minEffortValue && ev <= maxEffortValue);
 			evSum += ev;
 		}
 		assertTrue(evSum <= 510);

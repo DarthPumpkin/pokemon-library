@@ -1,5 +1,7 @@
 package de.darthpumpkin.pkmnlib;
 
+import java.util.Arrays;
+
 /**
  * Builder class for conveniently and safely generating a
  * {@link PokemonInstance}. All set methods check the passed argument on
@@ -23,6 +25,23 @@ public class PokemonInstanceBuilder {
 		int n = sAbilities[1] == 0 ? 1 : 2;
 		int i = (int) Math.floor(Math.random()*n);
 		p.setAbilityId(sAbilities[i]);
+		p.setExperiencePoints(0);
+		p.setLevel(5);
+		// determine four latest learnable moves
+		// TODO Test the binary search thing, probably white-box!
+		Move[] moves;
+		int currentLevel = p.getLevel();
+		int[] levels = p.getSpecies().getLevelsForMovesLearnableByLevel();
+		int index = Arrays.binarySearch(levels, currentLevel);
+		if (index < 0) {
+			// see javadoc of Arrays.binarySearch(..)
+			index = 1 - index;
+		}
+		Move[] allMoves = p.getSpecies().getMovesLearnableByLevel();
+		moves = Arrays.copyOfRange(allMoves, (index >= 4) ? index - 4 : 0, index);
+		moves = Arrays.copyOf(moves, 4);	//in case index < 3
+		p.setMoves(moves);
+		
 		// TODO add more default values
 	}
 
@@ -51,7 +70,7 @@ public class PokemonInstanceBuilder {
 
 	public PokemonInstanceBuilder setDeterminantValues(int[] dVs) {
 		for (int dv : dVs) {
-			if (dv > 34 || dv < 0) {
+			if (dv > 31 || dv < 0) {
 				throw new IllegalArgumentException(dv + " is not a valid DV");
 			}
 		}
@@ -70,11 +89,12 @@ public class PokemonInstanceBuilder {
 		if (evSum > 510) {
 			throw new IllegalArgumentException("Sum of EVs is over 510");
 		}
+		p.setEffortValues(eVs);
 		return this;
 	}
 	
 	public PokemonInstanceBuilder setLevel(int level) {
-		if (level < 0 || level > 100) {
+		if (level <= 0 || level > 100) {
 			throw new IllegalArgumentException(level + " is not a valid level");
 		}
 		p.setLevel(level);

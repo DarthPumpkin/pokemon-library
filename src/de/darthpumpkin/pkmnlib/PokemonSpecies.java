@@ -1,6 +1,7 @@
 package de.darthpumpkin.pkmnlib;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
  * Use a {@link PokemonSpeciesFactory} to create a PokemonSpecies
@@ -23,6 +24,8 @@ public class PokemonSpecies implements Serializable {
 	private int genderRate;
 	private int growthRate;
 	private int height;
+	private int[] levelsForMovesLearnableByLevel;
+	private Move[] movesLearnableByLevel;
 	private int speciesId;
 	private Type[] types;
 	private int weight;
@@ -101,6 +104,23 @@ public class PokemonSpecies implements Serializable {
 
 	public void setHeight(int height) {
 		this.height = height;
+	}
+
+	public int[] getLevelsForMovesLearnableByLevel() {
+		return levelsForMovesLearnableByLevel;
+	}
+
+	public void setLevelsForMovesLearnableByLevel(
+			int[] levelsForMovesLearnableByLevel) {
+		this.levelsForMovesLearnableByLevel = levelsForMovesLearnableByLevel;
+	}
+
+	public Move[] getMovesLearnableByLevel() {
+		return movesLearnableByLevel;
+	}
+
+	public void setMovesLearnableByLevel(Move[] movesLearnableByLevel) {
+		this.movesLearnableByLevel = movesLearnableByLevel;
 	}
 
 	public int getSpeciesId() {
