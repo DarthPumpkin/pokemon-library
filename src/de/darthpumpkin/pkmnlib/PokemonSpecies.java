@@ -1,7 +1,6 @@
 package de.darthpumpkin.pkmnlib;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * Use a {@link PokemonSpeciesFactory} to create a PokemonSpecies
@@ -13,15 +12,15 @@ import java.util.Map;
  */
 public class PokemonSpecies implements Serializable {
 
-	private int[] abilities; //0-1: regular, 2-3: hidden
+	private int[] abilities; // 0-1: regular, 2-3: hidden
 	private int baseFriendship;
 	private int[] baseStats;
 	private int catchRate;
 	private int[] eggGroups;
 	private int[] evYield; // how many EV gets the defeater of this pkmn
+	private int genderRate;
 	// from 1 to 6, see table growth_rates and growth_rate_prose as well as
 	// bulbapedia.net or pokewiki.de
-	private int genderRate;
 	private int growthRate;
 	private int height;
 	private int[] levelsForMovesLearnableByLevel;
@@ -166,5 +165,51 @@ public class PokemonSpecies implements Serializable {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Calulates the absolute amount of experience points an instance of this
+	 * species must have collected to reach specified level.
+	 * 
+	 * @param level
+	 *            Level for which the experience points should be calculated
+	 * @return Absolute amount
+	 */
+	public int requiredExperiencePointsForLevel(int level) {
+		int n = level;
+		int epForNextLevel = 0;
+		switch (growthRate) {
+		case 1:
+			epForNextLevel = 5 / 4 * (n ^ 3);
+			break;
+		case 2:
+			epForNextLevel = n ^ 3;
+			break;
+		case 3:
+			epForNextLevel = 4 / 5 * (n ^ 3);
+			break;
+		case 4:
+			epForNextLevel = (n == 1) ? 0 : (n == 2) ? 9 : (n == 3) ? 57
+					: (n == 4) ? 96 : 6 / 5 * (n ^ 3) - 15 * (n ^ 2) + 100 * n
+							- 140;
+			break;
+		case 5:
+			epForNextLevel = (n <= 50) ? (n ^ 3) * (100 - n) / 50
+					: (n <= 68) ? (n ^ 3) * (150 - n) / 100
+							: (n <= 98) ? (n ^ 3) / 500
+									* (int) Math.floor((1911 - 10 * n) / 3)
+									: (n ^ 3) * (160 - n) / 100;
+			break;
+		case 6:
+			epForNextLevel = (n <= 15) ? (n ^ 3)
+					* ((int) Math.floor((n + 1) / 3) + 24) / 50
+					: (n <= 36) ? (n ^ 3) * (n + 14) / 50 : (n ^ 3)
+							* ((int) Math.floor(n / 2) + 32) / 50;
+			break;
+		default:
+			throw new RuntimeException(
+					"Calculation of experience points failed. Probably illegal growth rate or error in algorithm");
+		}
+		return epForNextLevel;
 	}
 }

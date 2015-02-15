@@ -1,11 +1,9 @@
 package de.darthpumpkin.pkmnlib.test;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 import org.junit.After;
@@ -178,12 +176,10 @@ public class PokemonInstanceBuilderTest {
 	 */
 	private void assertValidPokemonInstance(PokemonInstance i) {
 		// check abilityId
-		// TODO look up correct values
-		int minValidAbilityId = 0;
-		double maxValidAbilityId = 1e9;
+		int[] abilityIds = i.getSpecies().getAbilities().clone();
+		Arrays.sort(abilityIds);
 		int abilityId = i.getAbilityId();
-		assertTrue(abilityId >= minValidAbilityId
-				&& abilityId <= maxValidAbilityId);
+		assertTrue(Arrays.binarySearch(abilityIds, abilityId) >= 0);
 		// check deterValues
 		int minDeterValue = 0;
 		int maxDeterValue = 31;
@@ -208,9 +204,13 @@ public class PokemonInstanceBuilderTest {
 		// check experience points & level consistency
 		int ep = i.getExperiencePoints();
 		int level = i.getLevel();
+		int epForNextLevel = i.getSpecies().requiredExperiencePointsForLevel(
+				level + 1)
+				- i.getSpecies().requiredExperiencePointsForLevel(level);
 		assertTrue(ep >= 0);
 		assertTrue(level > 0 && level <= 100);
-		// TODO assert that ep is lower than required to proceed to next level
+		assertTrue(ep + " >= " + epForNextLevel
+				+ " (required for next level)", ep < epForNextLevel);
 		// check gender
 		int gender = i.getGender();
 		// TODO assert that gender is compatible with species' gender
@@ -221,5 +221,4 @@ public class PokemonInstanceBuilderTest {
 		assertTrue(moves.length == 4);
 		// TODO assert that moves are learnable by species
 	}
-
 }

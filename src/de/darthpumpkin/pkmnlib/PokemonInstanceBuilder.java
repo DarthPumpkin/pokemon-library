@@ -22,7 +22,7 @@ public class PokemonInstanceBuilder {
 		p.setEffortValues(new int[] { 0, 0, 0, 0, 0, 0 });
 		// abilitiy: choose randomly between non-hidden
 		int[] sAbilities = species.getAbilities();
-		int n = sAbilities[1] == 0 ? 1 : 2;
+		int n = (sAbilities[1] == 0) ? 1 : 2;
 		int i = (int) Math.floor(Math.random() * n);
 		p.setAbilityId(sAbilities[i]);
 		p.setExperiencePoints(0);
