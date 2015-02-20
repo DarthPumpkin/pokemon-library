@@ -21,7 +21,7 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	private int[] effortValues;
 	private int experiencePoints; // those obtained since last level-up
 	// TODO int or enum? check db
-	private int gender;
+	private Gender gender;
 	private int level;
 	private Move[] moves;
 	private String nickname;	// null if not set
@@ -94,7 +94,7 @@ public class PokemonInstance implements Serializable, ItemContainer {
 		return experiencePoints;
 	}
 
-	public int getGender() {
+	public Gender getGender() {
 		return gender;
 	}
 
@@ -162,7 +162,7 @@ public class PokemonInstance implements Serializable, ItemContainer {
 		this.experiencePoints = experiencePoints;
 	}
 
-	public void setGender(int gender) {
+	public void setGender(Gender gender) {
 		this.gender = gender;
 	}
 

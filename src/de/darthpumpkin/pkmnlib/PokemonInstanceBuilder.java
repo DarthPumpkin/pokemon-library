@@ -27,6 +27,18 @@ public class PokemonInstanceBuilder {
 		p.setAbilityId(sAbilities[i]);
 		p.setExperiencePoints(0);
 		p.setLevel(5);
+		// gender
+		int gr = species.getGenderRate(); 
+		if (gr == -1) {
+			p.setGender(Gender.NEUTRAL);
+		} else {
+			float threshold = gr/8f;
+			if (Math.random() < threshold) {
+				p.setGender(Gender.FEMALE);
+			} else {
+				p.setGender(Gender.MALE);
+			}
+		}
 
 		// TODO add more default values
 	}

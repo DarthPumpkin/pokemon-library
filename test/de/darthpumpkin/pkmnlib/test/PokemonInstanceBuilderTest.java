@@ -13,6 +13,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.darthpumpkin.pkmnlib.DummySpeciesFactory;
+import de.darthpumpkin.pkmnlib.Gender;
 import de.darthpumpkin.pkmnlib.Move;
 import de.darthpumpkin.pkmnlib.PokemonInstance;
 import de.darthpumpkin.pkmnlib.PokemonInstanceBuilder;
@@ -209,11 +210,27 @@ public class PokemonInstanceBuilderTest {
 				- i.getSpecies().requiredExperiencePointsForLevel(level);
 		assertTrue(ep >= 0);
 		assertTrue(level > 0 && level <= 100);
-		assertTrue(ep + " >= " + epForNextLevel
-				+ " (required for next level)", ep < epForNextLevel);
+		assertTrue(ep + " >= " + epForNextLevel + " (required for next level)",
+				ep < epForNextLevel);
 		// check gender
-		int gender = i.getGender();
-		// TODO assert that gender is compatible with species' gender
+		Gender gender = i.getGender();
+		int genderRate = i.getSpecies().getGenderRate();
+		int[] validGenderRates;
+		switch (gender) {
+		case FEMALE:
+			validGenderRates = new int[] { 1, 2, 4, 6, 7, 8 };
+			break;
+		case MALE:
+			validGenderRates = new int[] { 0, 1, 2, 4, 6, 7 };
+			break;
+		case NEUTRAL:
+			validGenderRates = new int[] { -1 };
+			break;
+		default:
+			validGenderRates = new int[] {};
+		}
+		assertTrue(gender + " is not valid for genderRate " + genderRate,
+				Arrays.binarySearch(validGenderRates, genderRate) >= 0);
 		// distribution
 		// check moves
 		Move[] moves = i.getMoves();

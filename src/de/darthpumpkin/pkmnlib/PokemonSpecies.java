@@ -18,6 +18,7 @@ public class PokemonSpecies implements Serializable {
 	private int catchRate;
 	private int[] eggGroups;
 	private int[] evYield; // how many EV gets the defeater of this pkmn
+	// see table pokemon_species, column gender_rate
 	private int genderRate;
 	// from 1 to 6, see table growth_rates and growth_rate_prose as well as
 	// bulbapedia.net or pokewiki.de
