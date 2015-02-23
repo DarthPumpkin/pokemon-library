@@ -183,35 +183,35 @@ public class PokemonSpecies implements Serializable {
 		double epForNextLevel = 0;
 		switch (growthRate) {
 		case 1:
-			epForNextLevel = 5.0 / 4 * pow(n,3);
+			epForNextLevel = 5.0 / 4 * pow(n, 3);
 			break;
 		case 2:
-			epForNextLevel = pow(n,3);
+			epForNextLevel = pow(n, 3);
 			break;
 		case 3:
-			epForNextLevel = 4.0 / 5 * pow(n,3);
+			epForNextLevel = 4.0 / 5 * pow(n, 3);
 			break;
 		case 4:
 			epForNextLevel = (n == 1) ? 0 : (n == 2) ? 9 : (n == 3) ? 57
-					: (n == 4) ? 96 : 1.2 * pow(n,3) - 15 * pow(n,2) + 100 * n
-							- 140;
+					: (n == 4) ? 96 : 1.2 * pow(n, 3) - 15 * pow(n, 2) + 100
+							* n - 140;
 			break;
 		case 5:
-			epForNextLevel = (n <= 50) ? pow(n,3) * (100 - n) / 50.0
-					: (n <= 68) ? pow(n,3) * (150 - n) / 100.0
-							: (n <= 98) ? pow(n,3) / 500.0
+			epForNextLevel = (n <= 50) ? pow(n, 3) * (100 - n) / 50.0
+					: (n <= 68) ? pow(n, 3) * (150 - n) / 100.0
+							: (n <= 98) ? pow(n, 3) / 500.0
 									* (int) Math.floor((1911 - 10 * n) / 3.0)
-									: pow(n,3) * (160 - n) / 100.0;
+									: pow(n, 3) * (160 - n) / 100.0;
 			break;
 		case 6:
-			epForNextLevel = (n <= 15) ? pow(n,3)
+			epForNextLevel = (n <= 15) ? pow(n, 3)
 					* ((int) Math.floor((n + 1) / 3.0) + 24) / 50.0
-					: (n <= 36) ? pow(n,3) * (n + 14) / 50.0 : pow(n,3)
+					: (n <= 36) ? pow(n, 3) * (n + 14) / 50.0 : pow(n, 3)
 							* (Math.floor(n / 2.0) + 32) / 50.0;
 			break;
 		default:
 			throw new RuntimeException(
-					"Calculation of experience points failed. Probably illegal growth rate or error in algorithm");
+					"Calculation of experience points failed: Illegal growth rate.");
 		}
 		return (int) epForNextLevel;
 	}

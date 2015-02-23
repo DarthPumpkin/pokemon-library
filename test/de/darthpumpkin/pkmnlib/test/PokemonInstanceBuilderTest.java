@@ -1,6 +1,7 @@
 package de.darthpumpkin.pkmnlib.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +18,9 @@ import de.darthpumpkin.pkmnlib.Gender;
 import de.darthpumpkin.pkmnlib.Move;
 import de.darthpumpkin.pkmnlib.PokemonInstance;
 import de.darthpumpkin.pkmnlib.PokemonInstanceBuilder;
+import de.darthpumpkin.pkmnlib.PokemonSpecies;
 import de.darthpumpkin.pkmnlib.PokemonSpeciesFactory;
+import de.darthpumpkin.pkmnlib.Stat;
 
 /**
  * Small test for {@link PokemonInstanceBuilder}. Only tests Bulbasaurs.
@@ -177,7 +180,8 @@ public class PokemonInstanceBuilderTest {
 	 */
 	private void assertValidPokemonInstance(PokemonInstance i) {
 		// check abilityId
-		int[] abilityIds = i.getSpecies().getAbilities().clone();
+		PokemonSpecies s = i.getSpecies();
+		int[] abilityIds = s.getAbilities().clone();
 		Arrays.sort(abilityIds);
 		int abilityId = i.getAbilityId();
 		assertTrue(Arrays.binarySearch(abilityIds, abilityId) >= 0);
@@ -202,19 +206,24 @@ public class PokemonInstanceBuilderTest {
 			evSum += ev;
 		}
 		assertTrue(evSum <= 510);
+		// check hp
+		int hp = i.getCurrentHp();
+		int baseHp = s.getBaseStats()[Stat.HP.i()];
+		int expectedHp = 2 * baseHp + 110;
+		assertTrue("HP stat is " + hp + " but should be between 0 and "
+				+ expectedHp, hp >= 0 && hp <= expectedHp);
 		// check experience points & level consistency
 		int ep = i.getExperiencePoints();
 		int level = i.getLevel();
-		int epForNextLevel = i.getSpecies().requiredExperiencePointsForLevel(
-				level + 1)
-				- i.getSpecies().requiredExperiencePointsForLevel(level);
+		int epForNextLevel = s.requiredExperiencePointsForLevel(level + 1)
+				- s.requiredExperiencePointsForLevel(level);
 		assertTrue(ep >= 0);
 		assertTrue(level > 0 && level <= 100);
 		assertTrue(ep + " >= " + epForNextLevel + " (required for next level)",
 				ep < epForNextLevel);
 		// check gender
 		Gender gender = i.getGender();
-		int genderRate = i.getSpecies().getGenderRate();
+		int genderRate = s.getGenderRate();
 		int[] validGenderRates;
 		switch (gender) {
 		case FEMALE:
@@ -236,7 +245,8 @@ public class PokemonInstanceBuilderTest {
 		assertNotNull(moves);
 		assertTrue(moves.length == 4);
 		// TODO assert that moves are learnable by species
-		// nature
+
+		// check nature
 		assertTrue(i.getNature() >= 1 && i.getNature() <= 25);
 	}
 }

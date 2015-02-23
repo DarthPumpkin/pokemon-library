@@ -138,7 +138,7 @@ public class PokemonInstanceBuilder {
 			// TODO Test this, probably white-box!
 			Move[] moves;
 			int currentLevel = p.getLevel();
-			int[] levels = p.getSpecies().getLevelsForMovesLearnableByLevel();
+			int[] levels = s.getLevelsForMovesLearnableByLevel();
 			// index of the latest learnable move
 			int index = Arrays.binarySearch(levels, currentLevel);
 			if (index < 0) {
@@ -155,7 +155,7 @@ public class PokemonInstanceBuilder {
 					index++;
 				}
 			}
-			Move[] allMoves = p.getSpecies().getMovesLearnableByLevel();
+			Move[] allMoves = s.getMovesLearnableByLevel();
 			moves = Arrays.copyOfRange(allMoves, (index >= 4) ? index - 4 : 0,
 					index);
 			moves = Arrays.copyOf(moves, 4); // in case index < 3

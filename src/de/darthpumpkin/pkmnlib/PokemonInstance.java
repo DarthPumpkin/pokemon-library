@@ -161,6 +161,13 @@ public class PokemonInstance implements Serializable, ItemContainer {
 		this.effortValues = effortValues;
 	}
 
+	/**
+	 * Caution: this method does not automatically level up. This is not
+	 * intended for regular xp gain. For obtaining experience points, see
+	 * {@link PokemonInstance#obtainExperiencePoints(int)}
+	 * 
+	 * @param experiencePoints
+	 */
 	public void setExperiencePoints(int experiencePoints) {
 		this.experiencePoints = experiencePoints;
 	}
