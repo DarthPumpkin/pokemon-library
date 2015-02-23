@@ -151,7 +151,7 @@ public class PokemonInstanceBuilderTest {
 
 	/**
 	 * Tests if default moves are the four latest learnable ones. (level 13,
-	 * that is two new moves)
+	 * that is two new moves at once)
 	 */
 	@Test
 	public void testDefaultMovesTwoAtOnce() {
@@ -231,11 +231,12 @@ public class PokemonInstanceBuilderTest {
 		}
 		assertTrue(gender + " is not valid for genderRate " + genderRate,
 				Arrays.binarySearch(validGenderRates, genderRate) >= 0);
-		// distribution
 		// check moves
 		Move[] moves = i.getMoves();
 		assertNotNull(moves);
 		assertTrue(moves.length == 4);
 		// TODO assert that moves are learnable by species
+		// nature
+		assertTrue(i.getNature() >= 1 && i.getNature() <= 25);
 	}
 }

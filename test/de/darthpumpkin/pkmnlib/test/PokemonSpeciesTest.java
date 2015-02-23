@@ -3,7 +3,10 @@
  */
 package de.darthpumpkin.pkmnlib.test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashMap;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -18,7 +21,7 @@ import de.darthpumpkin.pkmnlib.Type;
 
 /**
  * Provisional test for PokemonSpecies. Only tests Bulbasaurs, because
- * DummySpeciesFactory can only instanciate bulbasaur species.
+ * DummySpeciesFactory can only instanciate bulbasaur s.
  * 
  * @author dominik
  * 
@@ -26,7 +29,7 @@ import de.darthpumpkin.pkmnlib.Type;
 public class PokemonSpeciesTest {
 
 	private static PokemonSpeciesFactory factory = null;
-	private PokemonSpecies species = null;
+	private PokemonSpecies s = null;
 
 	/**
 	 * @throws java.lang.Exception
@@ -48,7 +51,7 @@ public class PokemonSpeciesTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		species = factory.getSpeciesById(1);
+		s = factory.getSpeciesById(1);
 	}
 
 	/**
@@ -56,7 +59,7 @@ public class PokemonSpeciesTest {
 	 */
 	@After
 	public void tearDown() throws Exception {
-		species = null;
+		s = null;
 	}
 
 	/**
@@ -69,9 +72,9 @@ public class PokemonSpeciesTest {
 		Type grass = Type.GRASS;
 		Type poison = Type.POISON;
 		Type flying = Type.FLYING;
-		assertTrue(species.isOfType(grass));
-		assertTrue(species.isOfType(poison));
-		assertFalse(species.isOfType(flying));
+		assertTrue(s.isOfType(grass));
+		assertTrue(s.isOfType(poison));
+		assertFalse(s.isOfType(flying));
 	}
 
 	/**
@@ -81,7 +84,48 @@ public class PokemonSpeciesTest {
 	 */
 	@Test(expected = IllegalArgumentException.class)
 	public void testIsOfTypeNull() {
-		species.isOfType(null);
+		s.isOfType(null);
+	}
+
+	/**
+	 * Tests
+	 * {@link de.darthpumpkin.pkmnlib.PokemonSpecies#requiredExperiencePointsForLevel(int)}
+	 * for correctness (white-box, see actual method). Reference values are
+	 * copied from <a href=
+	 * "http://bulbapedia.bulbagarden.net/wiki/Experience#Experience_at_each_level"
+	 * >here</a>.
+	 */
+	@Test
+	public void testRequiredExperiencePointsForLevel() {
+		HashMap<Integer, Integer> epMap = new HashMap<Integer, Integer>();
+		epMap.put(1, 0);
+		epMap.put(2, 9);
+		epMap.put(3, 57);
+		epMap.put(4, 96);
+		epMap.put(5, 135);
+		epMap.put(6, 179);
+		epMap.put(14, 1612);
+		epMap.put(15, 2035);
+		epMap.put(16, 2535);
+		epMap.put(35, 36435);
+		epMap.put(36, 40007);
+		epMap.put(37, 43808);
+		epMap.put(49, 109923);
+		epMap.put(50, 117360);
+		epMap.put(51, 125126);
+		epMap.put(67, 300140);
+		epMap.put(68, 314618);
+		epMap.put(69, 329555);
+		epMap.put(97, 963632);
+		epMap.put(98, 995030);
+		epMap.put(99, 1027103);
+		epMap.put(100, 1059860);
+		for (int lvl : epMap.keySet()) {
+			int neededXp = epMap.get(lvl);
+			int actualXp = s.requiredExperiencePointsForLevel(lvl);
+			assertTrue("Level " + lvl + " requires " + neededXp
+					+ " xp instead of " + actualXp, neededXp == actualXp);
+		}
 	}
 
 }

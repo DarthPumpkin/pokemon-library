@@ -28,17 +28,20 @@ public class PokemonInstanceBuilder {
 		p.setExperiencePoints(0);
 		p.setLevel(5);
 		// gender
-		int gr = species.getGenderRate(); 
+		int gr = species.getGenderRate();
 		if (gr == -1) {
 			p.setGender(Gender.NEUTRAL);
 		} else {
-			float threshold = gr/8f;
+			float threshold = gr / 8f;
 			if (Math.random() < threshold) {
 				p.setGender(Gender.FEMALE);
 			} else {
 				p.setGender(Gender.MALE);
 			}
 		}
+		// nature
+		int nature = (int) Math.ceil(Math.random()*25);
+		p.setNature(nature);
 
 		// TODO add more default values
 	}
@@ -105,6 +108,15 @@ public class PokemonInstanceBuilder {
 		}
 		p.setMoves(moves);
 		return this;
+	}
+
+	public PokemonInstanceBuilder setNature(int nature) {
+		if (nature > 0 && nature <= 25) {
+			p.setNature(nature);
+			return this;
+		}
+		throw new IllegalArgumentException(nature
+				+ " is not a valid id for nature");
 	}
 
 	/**
