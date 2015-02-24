@@ -247,6 +247,6 @@ public class PokemonInstanceBuilderTest {
 		// TODO assert that moves are learnable by species
 
 		// check nature
-		assertTrue(i.getNature() >= 1 && i.getNature() <= 25);
+		assertNotNull(i.getNature());
 	}
 }

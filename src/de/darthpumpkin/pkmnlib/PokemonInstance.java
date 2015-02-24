@@ -22,7 +22,7 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	private Gender gender;
 	private int level;
 	private Move[] moves;
-	private int nature; // from 1 to 25
+	private Nature nature; // from 1 to 25
 	private String nickname; // null if not set
 	private PokemonSpecies species;
 	private StatusProblem statusProblem; // null if there is none
@@ -73,6 +73,51 @@ public class PokemonInstance implements Serializable, ItemContainer {
 
 	}
 
+	// TODO Test cases for all methods below
+	/**
+	 * 
+	 * @return Amount of additional ep needed to proceed to next level.
+	 */
+	public int requiredExperiencePointsToNextLevel() {
+		return this.species.requiredExperiencePointsForLevel(this.level + 1)
+				- totalExperiencePoints();
+	}
+
+	/**
+	 * 
+	 * @return The total amount of experience points of this instance, that is
+	 *         the sum of experience points required to reach the current level
+	 *         and the experience points gathered since last level-up
+	 */
+	public int totalExperiencePoints() {
+		return this.species.requiredExperiencePointsForLevel(this.level)
+				+ this.experiencePoints;
+	}
+
+	/**
+	 * increase the total amount of experience points by the specified value.
+	 * Level-up if needed.
+	 * 
+	 * @param ep
+	 */
+	public void obtainExperiencePoints(int ep) {
+		if (ep <= 0) {
+			throw new IllegalArgumentException("negative amount is not valid");
+		}
+		this.experiencePoints += ep;
+		// check if level-up
+		while (requiredExperiencePointsToNextLevel() < 0 && this.level < 100) {
+			// Syntactic sugar; lowers(!) the current xp by the difference
+			// between the required xp for current and next level
+			this.experiencePoints += this.species
+					.requiredExperiencePointsForLevel(this.level++)
+					- this.species.requiredExperiencePointsForLevel(this.level);
+		}
+		if (this.level == 100) {
+			this.experiencePoints = 0;
+		}
+	}
+
 	public int getAbilityId() {
 		return abilityId;
 	}
@@ -105,7 +150,7 @@ public class PokemonInstance implements Serializable, ItemContainer {
 		return moves;
 	}
 
-	public int getNature() {
+	public Nature getNature() {
 		return nature;
 	}
 
@@ -118,13 +163,28 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	}
 
 	/**
-	 * computes the current stats respecting the basic stats, level, eVs and dVs
+	 * computes the current stats respecting the basic stats, level, eVs and
+	 * dVs. For HP, this returns the maximum hp. For the actual current hp, see
+	 * {@link #getCurrentHp()}
 	 * 
 	 * @return
 	 */
 	public int[] getStats() {
-		// TODO Auto-generated method stub
-		return null;
+		int[] stats = new int[6];
+		int hpI = Stat.HP.i();
+		stats[0] = (int) Math
+				.floor(Math.floor((getDeterValues()[hpI] + 2
+						* species.getBaseStats()[hpI] + getEffortValues()[hpI]
+						/ 4.0 + 100))
+						* getLevel() / 100.0 + 10);
+		for (int i = 1; i < 6; i++) {
+			stats[i] = (int) (Math
+					.floor(Math.floor((getDeterValues()[hpI] + 2
+							* species.getBaseStats()[hpI] + getEffortValues()[hpI] / 4.0))
+							* getLevel() / 100.0 + 5)
+					* nature.getStatFactors()[i]);
+		}
+		return stats;
 	}
 
 	/**
@@ -184,7 +244,7 @@ public class PokemonInstance implements Serializable, ItemContainer {
 		this.moves = moves;
 	}
 
-	public void setNature(int nature) {
+	public void setNature(Nature nature) {
 		this.nature = nature;
 	}
 
@@ -203,50 +263,5 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	 */
 	public void setStatusProblem(StatusProblem statusProblem) {
 		this.statusProblem = statusProblem;
-	}
-
-	// TODO Test cases for all methods below
-	/**
-	 * 
-	 * @return Amount of additional ep needed to proceed to next level.
-	 */
-	public int requiredExperiencePointsToNextLevel() {
-		return this.species.requiredExperiencePointsForLevel(this.level + 1)
-				- totalExperiencePoints();
-	}
-
-	/**
-	 * 
-	 * @return The total amount of experience points of this instance, that is
-	 *         the sum of experience points required to reach the current level
-	 *         and the experience points gathered since last level-up
-	 */
-	public int totalExperiencePoints() {
-		return this.species.requiredExperiencePointsForLevel(this.level)
-				+ this.experiencePoints;
-	}
-
-	/**
-	 * increase the total amount of experience points by the specified value.
-	 * Level-up if needed.
-	 * 
-	 * @param ep
-	 */
-	public void obtainExperiencePoints(int ep) {
-		if (ep <= 0) {
-			throw new IllegalArgumentException("negative amount is not valid");
-		}
-		this.experiencePoints += ep;
-		// check if level-up
-		while (requiredExperiencePointsToNextLevel() < 0 && this.level < 100) {
-			// Syntactic sugar; lowers(!) the current xp by the difference
-			// between the required xp for current and next level
-			this.experiencePoints += this.species
-					.requiredExperiencePointsForLevel(this.level++)
-					- this.species.requiredExperiencePointsForLevel(this.level);
-		}
-		if (this.level == 100) {
-			this.experiencePoints = 0;
-		}
 	}
 }

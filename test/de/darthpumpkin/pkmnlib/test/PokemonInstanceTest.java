@@ -1,6 +1,6 @@
 package de.darthpumpkin.pkmnlib.test;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -9,6 +9,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import de.darthpumpkin.pkmnlib.DummySpeciesFactory;
+import de.darthpumpkin.pkmnlib.PokemonInstance;
 import de.darthpumpkin.pkmnlib.PokemonInstanceBuilder;
 import de.darthpumpkin.pkmnlib.PokemonSpeciesFactory;
 
@@ -37,11 +38,22 @@ public class PokemonInstanceTest {
 		builder = null;
 	}
 
+	/**
+	 * test {@link PokemonInstance#applyDamage(int)}
+	 */
 	@Test
 	public void testApplyDamage() {
-		fail("Not yet implemented");
+		PokemonInstance i = builder.makePokemon();
+		int originalHp = i.getCurrentHp();
+		i.applyDamage(1);
+		assertTrue(i.getCurrentHp() == originalHp - 1);
+		i.applyDamage(originalHp);
+		assertTrue(i.getCurrentHp() == 0);
 	}
 
+	/**
+	 * test {@link PokemonInstance#getStats()}
+	 */
 	@Test
 	public void testGetStats() {
 		fail("Not yet implemented");

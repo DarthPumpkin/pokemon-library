@@ -40,7 +40,9 @@ public class PokemonInstanceBuilder {
 			}
 		}
 		// nature
-		int nature = (int) Math.ceil(Math.random()*25);
+//		int nature = (int) Math.ceil(Math.random() * 25);
+		Nature nature = Nature.hardy;
+		// TODO set nature randomly
 		p.setNature(nature);
 
 		// TODO add more default values
@@ -110,13 +112,12 @@ public class PokemonInstanceBuilder {
 		return this;
 	}
 
-	public PokemonInstanceBuilder setNature(int nature) {
-		if (nature > 0 && nature <= 25) {
-			p.setNature(nature);
-			return this;
+	public PokemonInstanceBuilder setNature(Nature nature) {
+		if (nature == null) {
+			throw new IllegalArgumentException("null is not a valid argument");
 		}
-		throw new IllegalArgumentException(nature
-				+ " is not a valid id for nature");
+		p.setNature(nature);
+		return this;
 	}
 
 	/**
@@ -132,6 +133,9 @@ public class PokemonInstanceBuilder {
 		if (p.getAbilityId() == 0) {
 			// need to set id -> choose randomly between non-hidden abilities
 		}
+		// hp
+		// TODO replace by p.getStats()[hpI] once implemented and tested.
+		p.setCurrentHp(p.getStats()[Stat.HP.i()]);
 		// moves
 		if (p.getMoves() == null) {
 			// determine four latest (by level) learnable moves
