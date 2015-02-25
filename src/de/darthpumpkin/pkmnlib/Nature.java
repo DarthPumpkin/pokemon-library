@@ -18,7 +18,7 @@ public enum Nature {
 
 	private Nature(int id) {
 		// integer division (floor), modulo
-		this.indices = new int[] { id % 5, id / 5 };
+		this.indices = new int[] { (id-1) % 5 + 1, (id-1) / 5 + 1};
 	}
 
 	public float[] getStatFactors() {

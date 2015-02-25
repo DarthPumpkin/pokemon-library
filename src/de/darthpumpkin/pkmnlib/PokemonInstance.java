@@ -1,6 +1,7 @@
 package de.darthpumpkin.pkmnlib;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * Use a {@link PokemonInstanceBuilder} to create a PokemonInstance from a
@@ -172,17 +173,14 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	public int[] getStats() {
 		int[] stats = new int[6];
 		int hpI = Stat.HP.i();
-		stats[0] = (int) Math
-				.floor(Math.floor((getDeterValues()[hpI] + 2
+		stats[0] = (int) ((getDeterValues()[hpI] + 2
 						* species.getBaseStats()[hpI] + getEffortValues()[hpI]
-						/ 4.0 + 100))
-						* getLevel() / 100.0 + 10);
+						/ 4 + 100)
+						* getLevel() / 100 + 10);
 		for (int i = 1; i < 6; i++) {
-			stats[i] = (int) (Math
-					.floor(Math.floor((getDeterValues()[hpI] + 2
-							* species.getBaseStats()[hpI] + getEffortValues()[hpI] / 4.0))
-							* getLevel() / 100.0 + 5)
-					* nature.getStatFactors()[i]);
+			stats[i] = (int) (((getDeterValues()[i] + 2
+					* species.getBaseStats()[i] + getEffortValues()[i] / 4)
+					* getLevel() / 100 + 5) * nature.getStatFactors()[i]);
 		}
 		return stats;
 	}
