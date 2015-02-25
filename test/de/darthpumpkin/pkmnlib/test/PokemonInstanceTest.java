@@ -2,9 +2,6 @@ package de.darthpumpkin.pkmnlib.test;
 
 import static org.junit.Assert.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -88,22 +85,63 @@ public class PokemonInstanceTest {
 
 	@Test
 	public void testIsUsable() {
-		fail("Not yet implemented");
+		PokemonInstance i = builder.makePokemon();
+		assertTrue(i.isUsable());
+		i.setCurrentHp(0);
+		assertTrue(!i.isUsable());
 	}
 
 	@Test
 	public void testRequiredExperiencePointsToNextLevel() {
-		fail("Not yet implemented");
+		PokemonInstance i = builder.makePokemon();
+		assertEquals(44, i.requiredExperiencePointsToNextLevel());
+		i.setExperiencePoints(20);
+		assertEquals(24, i.requiredExperiencePointsToNextLevel());
+		i.setLevel(30);
+		i.setExperiencePoints(2000);
+		assertEquals(534, i.requiredExperiencePointsToNextLevel());
 	}
 
 	@Test
 	public void testTotalExperiencePoints() {
-		fail("Not yet implemented");
+		PokemonInstance i = builder.makePokemon();
+		assertEquals(135, i.totalExperiencePoints());
+		i.setExperiencePoints(20);
+		assertEquals(155, i.totalExperiencePoints());
+		i.setLevel(30);
+		i.setExperiencePoints(2000);
+		assertEquals(23760, i.totalExperiencePoints());
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void testObtainExperiencePointsIllegal() {
+		PokemonInstance i = builder.makePokemon();
+		i.obtainExperiencePoints(-1);
+	}
+	
 	@Test
 	public void testObtainExperiencePoints() {
-		fail("Not yet implemented");
+		PokemonInstance i = builder.makePokemon();
+		// without level gain
+		i.obtainExperiencePoints(1);
+		assertEquals(5, i.getLevel());
+		assertEquals(1, i.getExperiencePoints());
+		// level-up
+		i.obtainExperiencePoints(44);
+		assertEquals(6, i.getLevel());
+		assertEquals(1, i.getExperiencePoints());
+		// multiple level-ups
+		i.obtainExperiencePoints(240);
+		assertEquals(9, i.getLevel());
+		assertEquals(1, i.getExperiencePoints());
+		// 0 xp at level 100
+		i.obtainExperiencePoints(2000000);
+		assertEquals(100, i.getLevel());
+		assertEquals(0, i.getExperiencePoints());
+		// no xp gain if already at 100
+		i.obtainExperiencePoints(2000000);
+		assertEquals(100, i.getLevel());
+		assertEquals(0, i.getExperiencePoints());
 	}
 
 }

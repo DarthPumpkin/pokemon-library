@@ -1,7 +1,6 @@
 package de.darthpumpkin.pkmnlib;
 
 import java.io.Serializable;
-import java.util.Arrays;
 
 /**
  * Use a {@link PokemonInstanceBuilder} to create a PokemonInstance from a
@@ -47,6 +46,7 @@ public class PokemonInstance implements Serializable, ItemContainer {
 		currentHp -= damage;
 		if (currentHp < 0) {
 			currentHp = 0;
+			statusProblem = null;
 		}
 	}
 
@@ -74,7 +74,6 @@ public class PokemonInstance implements Serializable, ItemContainer {
 
 	}
 
-	// TODO Test cases for all methods below
 	/**
 	 * 
 	 * @return Amount of additional ep needed to proceed to next level.
@@ -199,8 +198,7 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	 *         etc.)
 	 */
 	public boolean isUsable() {
-		// TODO Auto-generated method stub
-		return false;
+		return currentHp > 0;
 	}
 
 	public void setAbilityId(int abilityId) {

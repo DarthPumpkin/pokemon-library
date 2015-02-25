@@ -178,7 +178,7 @@ public class PokemonInstanceBuilderTest {
 	 * @param i
 	 *            PokemonInstance to be tested.
 	 */
-	private void assertValidPokemonInstance(PokemonInstance i) {
+	/* package */static void assertValidPokemonInstance(PokemonInstance i) {
 		// check abilityId
 		PokemonSpecies s = i.getSpecies();
 		int[] abilityIds = s.getAbilities().clone();
