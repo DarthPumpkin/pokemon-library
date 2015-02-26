@@ -2,6 +2,8 @@ package de.darthpumpkin.pkmnlib.battle;
 
 import java.io.Serializable;
 
+import de.darthpumpkin.pkmnlib.AtomarMove;
+
 /**
  * AtomarBattleActions are the smallest pieces of actions that can happen in a
  * battle. A single move can cause multiple AtomarBattleActions, e.g. damage +

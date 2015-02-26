@@ -19,7 +19,7 @@ public class RegularBattle extends AbstractBattle {
 	public RegularBattle(Player[] players, Weather weather) {
 		super(players, weather);
 	}
-	
+
 	@Override
 	public void start() {
 		/*
@@ -162,6 +162,8 @@ public class RegularBattle extends AbstractBattle {
 
 				// if we're here, the attack was successful; now apply the
 				// effects
+				// TODO this switch is deprecated; see Move tree diagram in the
+				// doc folder
 				switch (turn.getMove().getEffectId()) {
 				case 1: // regular damage, see
 						// http://www.smogon.com/dp/articles/damage_formula

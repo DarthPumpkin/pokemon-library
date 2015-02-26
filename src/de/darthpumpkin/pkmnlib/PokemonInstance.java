@@ -11,7 +11,6 @@ import java.io.Serializable;
  * 
  */
 
-@SuppressWarnings("serial")
 public class PokemonInstance implements Serializable, ItemContainer {
 
 	private int abilityId;

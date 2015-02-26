@@ -10,7 +10,6 @@ import java.util.Map;
  * @author dominik
  *
  */
-@SuppressWarnings("serial")
 public abstract class AbstractBattle implements Serializable {
 	
 	protected final Player[] players;

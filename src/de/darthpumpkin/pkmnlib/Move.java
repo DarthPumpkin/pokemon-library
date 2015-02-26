@@ -4,17 +4,16 @@ import java.io.Serializable;
 import java.util.EnumSet;
 
 /**
- * This move model is designed after veekun's db, especially the table 'moves'
+ * The meta data is similar to the table 'moves'. However, instead of effectId
+ * and effectChance, Move contains a binary tree of {@link AtomarMove} instances
+ * that can possibly be stored as an XML file (see diagram in the doc folder). I
+ * consider this a better option than having a giant switch with all 396
+ * effectIds
  * 
  * @author dominik
  * 
  */
 
-/*
- * maybe only use effectId and effectChance as high-level interface, but
- * internally split it into AtomarMoves for easier processing?
- */
-@SuppressWarnings("serial")
 public class Move implements Serializable {
 
 	public enum DamageClass {
@@ -29,13 +28,12 @@ public class Move implements Serializable {
 	private int basePp;
 	private int currentPp;
 	private DamageClass damageClass;
-	private int effectChance;
-	private int effectId;
 	private EnumSet<MoveFlag> flags;
 	private int id;
 	private int maximumPp; // equals basePp if not raised by Ap-Plus etc.
 	private int power;
 	private int priority;
+	private AtomarMove rootElement;
 	// private int target;
 	private Type type;
 
@@ -80,22 +78,6 @@ public class Move implements Serializable {
 		this.damageClass = damageClass;
 	}
 
-	public int getEffectChance() {
-		return effectChance;
-	}
-
-	public void setEffectChance(int effectChance) {
-		this.effectChance = effectChance;
-	}
-
-	public int getEffectId() {
-		return effectId;
-	}
-
-	public void setEffectId(int effectId) {
-		this.effectId = effectId;
-	}
-
 	public EnumSet<MoveFlag> getFlags() {
 		return flags;
 	}
@@ -134,6 +116,14 @@ public class Move implements Serializable {
 
 	public void setPriority(int priority) {
 		this.priority = priority;
+	}
+
+	public AtomarMove getRootElement() {
+		return rootElement;
+	}
+
+	public void setRootElement(AtomarMove rootElement) {
+		this.rootElement = rootElement;
 	}
 
 	public Type getType() {
