@@ -1,5 +1,7 @@
 package de.darthpumpkin.pkmnlib;
 
+import java.io.Serializable;
+
 /**
  * An AtomarMove is an element in the Move tree (see diagram in the doc folder).
  * It is the smallest fragment a move can consist of.
@@ -7,7 +9,7 @@ package de.darthpumpkin.pkmnlib;
  * @author dominik
  * 
  */
-public class AtomarMove {
+public class AtomarMove implements Serializable {
 	private int probability;
 	private int effectId;
 	private AtomarMove failureElement;

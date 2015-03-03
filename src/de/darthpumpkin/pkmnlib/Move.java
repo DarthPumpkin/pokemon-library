@@ -7,8 +7,8 @@ import java.util.EnumSet;
  * The meta data is similar to the table 'moves'. However, instead of effectId
  * and effectChance, Move contains a binary tree of {@link AtomarMove} instances
  * that can possibly be stored as an XML file (see diagram in the doc folder). I
- * consider this a better option than having a giant switch with all 396
- * effectIds
+ * consider this a better option than having a giant switch in the Battle
+ * classes with all 396 effectIds.
  * 
  * @author dominik
  * 
