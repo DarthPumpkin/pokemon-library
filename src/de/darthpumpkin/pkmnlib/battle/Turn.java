@@ -5,7 +5,6 @@ import java.io.Serializable;
 import de.darthpumpkin.pkmnlib.Item;
 import de.darthpumpkin.pkmnlib.Move;
 
-@SuppressWarnings("serial")
 public class Turn implements Serializable, Comparable<Turn> {
 
 	/**
@@ -21,9 +20,25 @@ public class Turn implements Serializable, Comparable<Turn> {
 	private int targetId;
 	private Player parent;
 
-	/*
-	 * getters and setters
+	/**
+	 * first compares turn options. if equal, compares move priorities. Note:
+	 * this does not respect the pkmn's speed or any other information related
+	 * to the current state of the battle as a turn does not know about the
+	 * battle.
 	 */
+	@Override
+	public int compareTo(Turn otherTurn) {
+		int optionComparison = this.option.compareTo(otherTurn.getOption());
+		if (optionComparison != 0) {
+			return optionComparison;
+		}
+		if (option == TurnOption.FIGHT) {
+			return ((Integer) this.move.getPriority()).compareTo(otherTurn
+					.getMove().getPriority());
+		}
+		return 0;
+	}
+
 	public TurnOption getOption() {
 		return option;
 	}
@@ -62,24 +77,5 @@ public class Turn implements Serializable, Comparable<Turn> {
 
 	public void setParent(Player parent) {
 		this.parent = parent;
-	}
-
-	/**
-	 * first compares turn options. if equal, compares move priorities. Note:
-	 * this does not respect the pkmn's speed or any other information related
-	 * to the current state of the battle as a turn does not know about the
-	 * battle.
-	 */
-	@Override
-	public int compareTo(Turn otherTurn) {
-		int optionComparison = this.option.compareTo(otherTurn.getOption());
-		if (optionComparison != 0) {
-			return optionComparison;
-		}
-		if (option == TurnOption.FIGHT) {
-			return ((Integer) this.move.getPriority()).compareTo(otherTurn
-					.getMove().getPriority());
-		}
-		return 0;
 	}
 }

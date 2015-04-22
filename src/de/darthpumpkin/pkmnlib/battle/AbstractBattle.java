@@ -24,6 +24,8 @@ public abstract class AbstractBattle implements Serializable {
 	public AbstractBattle(Player[] players, Weather weather) {
 		this.players = players;
 		this.weather = weather;
+		this.trickRoomCounter = 0;
+		this.actionLog = new ArrayList<AtomarBattleAction>();
 	}
 	
 	/**

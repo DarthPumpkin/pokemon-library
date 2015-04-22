@@ -11,10 +11,10 @@ import de.darthpumpkin.pkmnlib.PokemonInstance;
  *
  */
 public class DummyPlayer implements SingleBattlePlayer {
-	
+
 	private PokemonInstance[] team;
 	private PokemonBattleInstance activePokemon;
-	
+
 	public DummyPlayer(PokemonInstance[] team) {
 		this.team = team;
 	}
@@ -25,8 +25,8 @@ public class DummyPlayer implements SingleBattlePlayer {
 		t.setOption(Turn.TurnOption.FIGHT);
 		t.setMove(activePokemon.getInstance().getMoves()[0]);
 		t.setParent(this);
-//		t.setTargetId(targetId);
-		return null;
+		// t.setTargetId(targetId);
+		return t;
 	}
 
 	@Override
