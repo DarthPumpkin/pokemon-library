@@ -1,0 +1,24 @@
+A move tree that causes damage and confusion if it hits (e.g. "Wuchtschlag" (german))
+<atomar occasion="success">
+	<probability>100</probability>
+	<effectId>1</effectId>
+	<atomar occasion="success">
+		<probability>100</probability>
+		<effectId>50</effectId>
+	</atomar>
+</atomar>
+
+-----------8<-----------
+
+A move tree that causes damage if it hits and otherwise damages itself (e.g. "Turmkick" (german))
+<atomar occasion="success">
+	<probability>100</probability>
+	<effectId>1</effectId>
+</atomar>
+<atomar occasion="failure">
+	<probability>100</probability>
+	<effectId>46</effectId>
+</atomar>
+
+Note: The effectIds above are currently those from the table move_effect_prose, but this will change: The goal is to reduce the amount of required effectIds as much as possible, because each effectId has to be implemented individually. And many of the effectIds used in the table can be split into multiple atomar effects.
+So, each of the effectIds in the table move_effect_prose (356 entries!) will be described by a move tree saved in the above xml format. This results in having 356 trees but (hopefully significantly) less than 356 effect implementations. Another advantage is that the program code does not have to be touched in order to add new moves (except new atomar effects are added, but this should not happen very often).

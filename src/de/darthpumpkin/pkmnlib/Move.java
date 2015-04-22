@@ -20,6 +20,7 @@ public class Move implements Serializable {
 		PHYSICAL, SPECIAL, STATUS
 	}
 
+	// TODO Upper-Case
 	public enum MoveFlag {
 		authentic, ballistics, bite, charge, contact, defrost, distance, gravity, heal, mental, mirror, nonSkyBattle, powder, protect, pulse, punch, recharge, reflectable, snatch, sound
 	}
@@ -33,7 +34,9 @@ public class Move implements Serializable {
 	private int maximumPp; // equals basePp if not raised by Ap-Plus etc.
 	private int power;
 	private int priority;
-	private AtomarMove rootElement;
+	// private AtomarMove rootElement;
+	private AtomarMove successElement;
+	private AtomarMove failureElement;
 	// private int target;
 	private Type type;
 
@@ -78,6 +81,14 @@ public class Move implements Serializable {
 		this.damageClass = damageClass;
 	}
 
+	public AtomarMove getFailureElement() {
+		return failureElement;
+	}
+
+	public void setFailureElement(AtomarMove failureElement) {
+		this.failureElement = failureElement;
+	}
+
 	public EnumSet<MoveFlag> getFlags() {
 		return flags;
 	}
@@ -118,12 +129,20 @@ public class Move implements Serializable {
 		this.priority = priority;
 	}
 
-	public AtomarMove getRootElement() {
-		return rootElement;
+	// public AtomarMove getRootElement() {
+	// return rootElement;
+	// }
+	//
+	// public void setRootElement(AtomarMove rootElement) {
+	// this.rootElement = rootElement;
+	// }
+
+	public AtomarMove getSuccessElement() {
+		return successElement;
 	}
 
-	public void setRootElement(AtomarMove rootElement) {
-		this.rootElement = rootElement;
+	public void setSuccessElement(AtomarMove successElement) {
+		this.successElement = successElement;
 	}
 
 	public Type getType() {
