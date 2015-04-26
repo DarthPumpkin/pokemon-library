@@ -92,6 +92,14 @@ public class DummyXMLMoveTreeProvider implements MoveTreeProvider {
 		}
 	}
 
+	/**
+	 * Turn the {@link Element} representation of an AtomarMove recursively into
+	 * an actual {@link AtomarMove} object.
+	 * 
+	 * @param doc
+	 *            the {@link Element} representing the AtomarMove
+	 * @return the AtomarMove
+	 */
 	private AtomarMove makeAtomarMove(Element doc) {
 		NodeList probability = doc.getElementsByTagName(PROBABILITY_TAG);
 		NodeList effectId = doc.getElementsByTagName(EFFECT_ID_TAG);
@@ -112,7 +120,9 @@ public class DummyXMLMoveTreeProvider implements MoveTreeProvider {
 					+ subelements.getLength() + " atomars");
 		}
 		AtomarMove am = new AtomarMove();
-		System.out.println(effectId);
+		/*
+		 * now start
+		 */
 		am.setEffectId(Integer.parseInt(effectId.item(0).getTextContent()));
 		am.setProbability(Integer
 				.parseInt(probability.item(0).getTextContent()));
@@ -120,8 +130,14 @@ public class DummyXMLMoveTreeProvider implements MoveTreeProvider {
 			Element subelement = (Element) subelements.item(i);
 			String occasion = subelement.getAttribute(OCCASION_ATTRIBUTE_NAME);
 			if (occasion.equals(SUCCESS_VALUE)) {
+				/*
+				 * recursion
+				 */
 				am.setSuccessElement(makeAtomarMove(subelement));
 			} else if (occasion.equals(FAILURE_VALUE)) {
+				/*
+				 * recursion
+				 */
 				am.setFailureElement(makeAtomarMove(subelement));
 			} else {
 				throw new RuntimeException("Malformed XML: " + occasion

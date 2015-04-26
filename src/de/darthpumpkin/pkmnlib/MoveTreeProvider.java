@@ -19,8 +19,10 @@ public interface MoveTreeProvider {
 	public void setMove(Move move);
 
 	/**
-	 * Attaches a binary tree of {@link AtomarMove}s to the {@link Move}. The
-	 * move tree is chosen so that it matches the id returned by
+	 * Attaches a binary tree of {@link AtomarMove}s to the {@link Move}, i.e.
+	 * this method initializes the succcessElement and failureElement returned
+	 * by {@link Move#getSuccessElement()} and {@link Move#getFailureElement()}.
+	 * The move tree is chosen so that it matches the id returned by
 	 * {@link Move#getId()}.
 	 */
 	public void attachMoveTree();
