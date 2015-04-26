@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Leech-Seed -->
-<atomar occasion="success"
+<atomar occasion="success">
     <probability>100</probability>
-    <effectId>1001</effect>
+    <effectId>1001</effectId>
 </atomar>
