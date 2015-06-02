@@ -1,0 +1,3 @@
+[submodule "poketypes"]
+	path = poketypes
+	url = https://github.com/alexmack929/poketypes
