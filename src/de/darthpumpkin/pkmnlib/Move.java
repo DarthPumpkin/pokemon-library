@@ -3,6 +3,8 @@ package de.darthpumpkin.pkmnlib;
 import java.io.Serializable;
 import java.util.EnumSet;
 
+import net.alexmack.poketypes.Poketype;
+
 /**
  * The meta data is similar to the table 'moves'. However, instead of effectId
  * and effectChance, Move contains a binary tree of {@link AtomarMove} instances
@@ -38,7 +40,7 @@ public class Move implements Serializable {
 	private AtomarMove successElement;
 	private AtomarMove failureElement;
 	// private int target;
-	private Type type;
+	private Poketype type;
 
 	/**
 	 * Provisional constructor
@@ -145,11 +147,11 @@ public class Move implements Serializable {
 		this.successElement = successElement;
 	}
 
-	public Type getType() {
+	public Poketype getType() {
 		return type;
 	}
 
-	public void setType(Type type) {
+	public void setType(Poketype type) {
 		this.type = type;
 	}
 

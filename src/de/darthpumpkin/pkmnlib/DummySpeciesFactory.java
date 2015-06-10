@@ -1,5 +1,7 @@
 package de.darthpumpkin.pkmnlib;
 
+import net.alexmack.poketypes.Poketype;
+import net.alexmack.poketypes.PoketypeSet;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
@@ -44,8 +46,18 @@ public class DummySpeciesFactory implements PokemonSpeciesFactory {
 				new Move(79), new Move(36), new Move(75), new Move(230),
 				new Move(74), new Move(38), new Move(388), new Move(235),
 				new Move(402) });
+		MoveTreeProvider mtProvider = new DummyXMLMoveTreeProvider();
+		for (Move move : bulbaSpecies.getMovesLearnableByLevel()) {
+			mtProvider.setMove(move);
+			mtProvider.attachMoveTree();
+		}
+		Move tackle = bulbaSpecies.getMovesLearnableByLevel()[0];
+		tackle.setAccuracy(100);
+		tackle.setPower(50);
+		tackle.setPriority(0);
+		tackle.setType(Poketype.NORMAL);
 		bulbaSpecies.setSpeciesId(1);
-		bulbaSpecies.setTypes(new Type[] { Type.GRASS, Type.POISON });
+		bulbaSpecies.setTypes(new PoketypeSet (Poketype.GRASS, Poketype.POISON));
 		bulbaSpecies.setWeight(69);
 		return bulbaSpecies;
 	}

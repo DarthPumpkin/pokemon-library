@@ -6,7 +6,13 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import de.darthpumpkin.pkmnlib.*;
+import net.alexmack.poketypes.Poketype;
+import de.darthpumpkin.pkmnlib.Item;
+import de.darthpumpkin.pkmnlib.Move;
+import de.darthpumpkin.pkmnlib.PokemonBattleInstance;
+import de.darthpumpkin.pkmnlib.PokemonInstance;
+import de.darthpumpkin.pkmnlib.Stat;
+import de.darthpumpkin.pkmnlib.StatusProblem;
 
 @SuppressWarnings("serial")
 public class RegularBattle extends AbstractBattle {
@@ -112,7 +118,7 @@ public class RegularBattle extends AbstractBattle {
 					// see http://www.serebii.net/games/escape.shtml
 					if (defendingPkmn.getInstance().getAbilityId() != 71
 							|| attackingPkmn.getInstance().getSpecies()
-									.isOfType(Type.FLYING)
+									.isOfType(Poketype.FLYING)
 							|| attackingPkmn.isFlying()
 							|| attackingPkmn.holdsItemInstanceOf(272)) {
 						// 71 == 'arena trap'; but still works when flying-type
@@ -130,7 +136,7 @@ public class RegularBattle extends AbstractBattle {
 			case SWAP_PKMN:
 				if (defendingPkmn.getInstance().getAbilityId() != 71
 						|| attackingPkmn.getInstance().getSpecies()
-								.isOfType(Type.FLYING)
+								.getTypeSet().contains(Poketype.FLYING)
 						|| attackingPkmn.isFlying()
 						|| attackingPkmn.holdsItemInstanceOf(272)) {
 					// TODO there are moves that can prevent swapping
@@ -282,17 +288,14 @@ public class RegularBattle extends AbstractBattle {
 					 * STAB
 					 */
 					// TODO stab is 2 if the attaacker's ability is adaptability
-					double stab = turn.getMove().getType()
-							.getStab(attackingPkmn.getInstance().getSpecies());
+					double stab = attackingPkmn.getInstance().getSpecies()
+							.getTypeSet().getStab(turn.getMove().getType());
 
 					/*
 					 * TYPE1 and TYPE2
 					 */
-					double eff = turn
-							.getMove()
-							.getType()
-							.getEffectivenessOver(
-									defendingPkmn.getInstance().getSpecies());
+					double eff = defendingPkmn.getInstance().getSpecies()
+							.getTypeSet().getModifier(turn.getMove().getType());
 
 					/*
 					 * MOD3

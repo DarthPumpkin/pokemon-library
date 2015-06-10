@@ -8,6 +8,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 
+import net.alexmack.poketypes.Poketype;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -17,7 +19,6 @@ import org.junit.Test;
 import de.darthpumpkin.pkmnlib.DummySpeciesFactory;
 import de.darthpumpkin.pkmnlib.PokemonSpecies;
 import de.darthpumpkin.pkmnlib.PokemonSpeciesFactory;
-import de.darthpumpkin.pkmnlib.Type;
 
 /**
  * Provisional test for PokemonSpecies. Only tests Bulbasaurs, because
@@ -69,9 +70,9 @@ public class PokemonSpeciesTest {
 	 */
 	@Test
 	public void testIsOfType() {
-		Type grass = Type.GRASS;
-		Type poison = Type.POISON;
-		Type flying = Type.FLYING;
+		Poketype grass = Poketype.GRASS;
+		Poketype poison = Poketype.POISON;
+		Poketype flying = Poketype.FLYING;
 		assertTrue(s.isOfType(grass));
 		assertTrue(s.isOfType(poison));
 		assertFalse(s.isOfType(flying));

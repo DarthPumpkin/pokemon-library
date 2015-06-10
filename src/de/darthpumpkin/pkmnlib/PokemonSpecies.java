@@ -1,8 +1,11 @@
 package de.darthpumpkin.pkmnlib;
 
+import static java.lang.Math.pow;
+
 import java.io.Serializable;
 
-import static java.lang.Math.pow;
+import net.alexmack.poketypes.Poketype;
+import net.alexmack.poketypes.PoketypeSet;
 
 /**
  * Use a {@link PokemonSpeciesFactory} to create a PokemonSpecies
@@ -29,7 +32,7 @@ public class PokemonSpecies implements Serializable {
 	private int[] levelsForMovesLearnableByLevel;
 	private Move[] movesLearnableByLevel;
 	private int speciesId;
-	private Type[] types;
+	private PoketypeSet typeSet;
 	private int weight;
 
 	/* package */PokemonSpecies() {
@@ -133,12 +136,12 @@ public class PokemonSpecies implements Serializable {
 		this.speciesId = speciesId;
 	}
 
-	public Type[] getTypes() {
-		return types;
+	public PoketypeSet getTypeSet() {
+		return typeSet;
 	}
 
-	public void setTypes(Type[] types) {
-		this.types = types;
+	public void setTypes(PoketypeSet types) {
+		this.typeSet = types;
 	}
 
 	public int getWeight() {
@@ -157,17 +160,14 @@ public class PokemonSpecies implements Serializable {
 	 * @throws IllegalArgumentException
 	 *             if type == null. Do not use this method to detect whether the
 	 *             species is a dual-type.
+	 * @deprecated use {@link PoketypeSet#contains} instead
 	 */
-	public boolean isOfType(Type type) {
+	@Deprecated
+	public boolean isOfType(Poketype type) {
 		if (type == null) {
 			throw new IllegalArgumentException("null is not accepted as Type");
 		}
-		for (Type t : types) {
-			if (t == type) {
-				return true;
-			}
-		}
-		return false;
+		return typeSet.contains(type);
 	}
 
 	/**
