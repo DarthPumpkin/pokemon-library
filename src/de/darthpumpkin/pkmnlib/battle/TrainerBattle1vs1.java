@@ -273,16 +273,16 @@ public class TrainerBattle1vs1 extends AbstractBattle {
 						 */
 						// TODO stab is 2 if the attaacker's ability is
 						// adaptability
-						double stab = attackingPkmn.getInstance().getSpecies().getTypeSet().getStab(turn
-								.getMove()
-								.getType());
+						double stab = attackingPkmn.getInstance().getSpecies()
+								.getTypeSet().getStab(turn.getMove().getType());
 
 						/*
 						 * TYPE1 and TYPE2
 						 */
-						double eff = defendingPkmn.getInstance()
-								.getSpecies().getTypeSet().getModifier(turn.getMove().getType()); 
-								
+						double eff = defendingPkmn.getInstance().getSpecies()
+								.getTypeSet()
+								.getModifier(turn.getMove().getType());
+
 						/*
 						 * MOD3
 						 */
@@ -300,7 +300,7 @@ public class TrainerBattle1vs1 extends AbstractBattle {
 										* mod1) + 2)
 								* critical * mod2)
 								* r / 100);
-//						System.out.println("level " + level + ", basePower " + basePower + ", atk " + atk + ", def " + def + ", r " + r);
+
 						defendingPkmn.getInstance().applyDamage(damage);
 						// TODO log!
 						break;
@@ -325,6 +325,22 @@ public class TrainerBattle1vs1 extends AbstractBattle {
 				break;
 			// TODO implement other turn options
 			default:
+			}
+			for (int i = 0; i < 2; i++) {
+				SingleBattlePlayer sbp = (SingleBattlePlayer) players[i];
+				PokemonInstance pi = sbp.getActivePokemon().getInstance();
+				if (!pi.isUsable()) {
+					PokemonInstance newPi = sbp.forceSwitch(pi);
+					if (newPi == null) {
+						active = false;
+						return;
+					} else {
+						PokemonBattleInstance pbi = new PokemonBattleInstance(
+								newPi);
+						activePkmns[i] = pbi;
+						sbp.setActivePokemon(pbi);
+					}
+				}
 			}
 		}
 		// TODO continue
