@@ -11,9 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 import de.darthpumpkin.pkmnlib.AtomarMove;
+import de.darthpumpkin.pkmnlib.Move;
 import de.darthpumpkin.pkmnlib.PokemonBattleInstance;
 import de.darthpumpkin.pkmnlib.PokemonInstance;
 import de.darthpumpkin.pkmnlib.Stat;
+import de.darthpumpkin.pkmnlib.StatusProblem;
 
 /**
  * @author dominik
@@ -29,7 +31,8 @@ public class TrainerBattle1vs1 extends AbstractBattle {
 
 	public TrainerBattle1vs1(SingleBattlePlayer[] players, Weather weather) {
 		super(players, weather);
-		// TODO Auto-generated constructor stub
+		this.activePkmns = new PokemonBattleInstance[2];
+		this.active = false;
 	}
 
 	/*
@@ -46,6 +49,8 @@ public class TrainerBattle1vs1 extends AbstractBattle {
 			for (PokemonInstance p : players[i].getTeam()) {
 				if (p.isUsable()) {
 					activePkmns[i] = new PokemonBattleInstance(p);
+					((SingleBattlePlayer[]) players)[i]
+							.setActivePokemon(activePkmns[i]);
 					break;
 				}
 			}
@@ -55,6 +60,7 @@ public class TrainerBattle1vs1 extends AbstractBattle {
 						+ " has no usable pkmns!");
 			}
 		}
+		this.active = true;
 		/*
 		 * activate abilities
 		 */
@@ -95,10 +101,11 @@ public class TrainerBattle1vs1 extends AbstractBattle {
 				if (o1.getOption() == Turn.TurnOption.FIGHT) {
 					// if we're here, both moves have the same priority
 					// therefore, we compare the pkmns' speed
-					return ((Float) activePkmns[Arrays.binarySearch(players,
+					return ((Float) activePkmns[Arrays.asList(players).indexOf(
 							o1.getParent())].getCurrent(Stat.SPEED))
-							.compareTo(activePkmns[Arrays.binarySearch(players,
-									o2.getParent())].getCurrent(Stat.SPEED));
+							.compareTo(activePkmns[Arrays.asList(players)
+									.indexOf(o2.getParent())]
+									.getCurrent(Stat.SPEED));
 				}
 				// no criteria left => random
 				return 0;
@@ -124,7 +131,7 @@ public class TrainerBattle1vs1 extends AbstractBattle {
 				 * If we're here, the move was not prevented; will be executed
 				 */
 				// TODO check if attack hits (accuracy, evasion...)
-				boolean hit = false;
+				boolean hit = true;
 				AtomarMove tree = null;
 				if (hit) {
 					/*
@@ -144,17 +151,172 @@ public class TrainerBattle1vs1 extends AbstractBattle {
 				 * traverse now.
 				 */
 				while (tree != null) {
-					boolean success = false;
+					switch (tree.getEffectId()) {
+					// TODO implement atomar effects here
+					case 1:
+						// see
+						// http://www.smogon.com/dp/articles/damage_formula
+						/*
+						 * level
+						 */
+						// int division will automatically floor
+						int level = (attackingPkmn.getInstance().getLevel() * 2) / 5 + 2;
+
+						/*
+						 * base power
+						 */
+						int power = turn.getMove().getPower();
+						double helpingHand = 1d; // not relevant in single
+													// battle
+						// see
+						// http://www.smogon.com/dp/articles/damage_formula#bp_items
+						double itemMultiplier = 1d;
+						int charge = 1; // TODO 2 if the last move was
+										// charge and the move's type is
+										// electric
+						double sport = 1d; // TODO modificator for mud sport
+											// and water sport
+						// TODO see
+						// http://www.smogon.com/dp/articles/damage_formula#bp_abilities_user
+						// and
+						// http://www.smogon.com/dp/articles/damage_formula#bp_abilities_foe
+						double abilityMultiplier = 1d;
+
+						// multiplying all beforementioned values with
+						// flooring after each step for the final basePower
+						// value
+						double basePower = Math.floor(Math.floor(Math
+								.floor(Math.floor(Math.floor(helpingHand
+										* power)
+										* itemMultiplier)
+										* charge)
+								* sport)
+								* abilityMultiplier);
+						/*
+						 * [Sp]Atk
+						 */
+						double atkStat = (turn.getMove().getDamageClass() == Move.DamageClass.PHYSICAL) ? attackingPkmn
+								.getCurrent(Stat.ATK) : attackingPkmn
+								.getCurrent(Stat.SPATK);
+						// TODO see
+						// http://www.smogon.com/dp/articles/damage_formula#atk_abilities
+						double abilityModifier = 1d;
+						// TODO see
+						// http://www.smogon.com/dp/articles/damage_formula#atk_items
+						double itemModifier = 1d;
+
+						// multiplying all beforementioned values with
+						// flooring after each step for the final atk value
+						double atk = Math.floor(Math.floor(Math.floor(atkStat
+								* abilityModifier)
+								* itemModifier));
+
+						/*
+						 * [Sp]Def
+						 */
+						double defStat = (turn.getMove().getDamageClass() == Move.DamageClass.PHYSICAL) ? defendingPkmn
+								.getCurrent(Stat.DEF) : defendingPkmn
+								.getCurrent(Stat.SPDEF);
+						// TODO see
+						// http://www.smogon.com/dp/articles/damage_formula#defense
+						double sx = 1d;
+						// TODO see
+						// http://www.smogon.com/dp/articles/damage_formula#defense
+						double mod = 1d;
+
+						// multiplying all beforementioned values with
+						// flooring after each step for the final def value
+						double def = Math.floor(Math.floor(defStat * sx) * mod);
+
+						/*
+						 * MOD1
+						 */
+						// TODO brn is always 1 if the attacker's ability is
+						// 'guts'
+						double brn = (turn.getMove().getDamageClass() == Move.DamageClass.PHYSICAL && attackingPkmn
+								.getInstance().getStatusProblem() == StatusProblem.BURN) ? 0.5
+								: 1;
+						// TODO see
+						// http://www.smogon.com/dp/articles/damage_formula#mod1
+						double rl = 1d;
+						// TODO see
+						// http://www.smogon.com/dp/articles/damage_formula#mod1
+						double weatherModifier = 1d;
+						// TODO see
+						// http://www.smogon.com/dp/articles/damage_formula#mod1
+						double ff = 1d;
+
+						// multiplying all beforementioned values for the
+						// final mod1
+						// value
+						double mod1 = brn * rl * weatherModifier * ff;
+
+						/*
+						 * Critical hit
+						 */
+						double critical = 1d; // TODO critical hits
+
+						/*
+						 * MOD2
+						 */
+						// TODO see
+						// http://www.smogon.com/dp/articles/damage_formula#mod2
+						double mod2 = 1d;
+
+						/*
+						 * R
+						 */
+						double r = 100 - (15 * Math.random()); // [85, 100]
+
+						/*
+						 * STAB
+						 */
+						// TODO stab is 2 if the attaacker's ability is
+						// adaptability
+						double stab = attackingPkmn.getInstance().getSpecies().getTypeSet().getStab(turn
+								.getMove()
+								.getType());
+
+						/*
+						 * TYPE1 and TYPE2
+						 */
+						double eff = defendingPkmn.getInstance()
+								.getSpecies().getTypeSet().getModifier(turn.getMove().getType()); 
+								
+						/*
+						 * MOD3
+						 */
+						// TODO see
+						// http://www.smogon.com/dp/articles/damage_formula#mod3
+						double mod3 = 1d;
+
+						/*
+						 * now, the final formula
+						 */
+						int damage = (int) Math.floor(Math.floor((Math
+								.floor(Math.floor(Math.floor(level * basePower
+										* atk / 50)
+										/ def)
+										* mod1) + 2)
+								* critical * mod2)
+								* r / 100);
+//						System.out.println("level " + level + ", basePower " + basePower + ", atk " + atk + ", def " + def + ", r " + r);
+						defendingPkmn.getInstance().applyDamage(damage);
+						// TODO log!
+						break;
+					case 101:
+						// TODO implement
+					case 1001:
+						// TODO implement
+					default:
+						throw new RuntimeException("Unknown effect id: "
+								+ tree.getEffectId());
+					}
+					boolean success = true;
 					// TODO determine if successful
 					if (success) {
 						// continue with left subtree
 						tree = tree.getSuccessElement();
-						switch (tree.getEffectId()) {
-						// TODO implement atomar effects here
-						default:
-							throw new RuntimeException("Unknown effect id: "
-									+ tree.getEffectId());
-						}
 					} else {
 						// continue with right subtree
 						tree = tree.getFailureElement();
@@ -176,6 +338,10 @@ public class TrainerBattle1vs1 extends AbstractBattle {
 	@Override
 	public boolean isActive() {
 		return this.active;
+	}
+
+	public PokemonBattleInstance[] getActivePkmns() {
+		return activePkmns;
 	}
 
 }
