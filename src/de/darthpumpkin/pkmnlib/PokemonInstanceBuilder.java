@@ -2,6 +2,7 @@ package de.darthpumpkin.pkmnlib;
 
 import java.util.Arrays;
 
+// TODO builder.makePokemon() should return a new PokemonInstance on every call.
 /**
  * Builder class for conveniently and safely generating a
  * {@link PokemonInstance}. All set methods check the passed argument on
@@ -13,49 +14,60 @@ import java.util.Arrays;
  */
 public class PokemonInstanceBuilder {
 
-	private PokemonInstance p;
+	private int abilityId;
+	private int currentHp; // unset
+	private int[] deterValues;
+	private int[] effortValues;
+	private int experiencePoints; // unset
+	private Gender gender;
+	private int level;
+	private Move[] moves;
+	private Nature nature;
+	private String nickname; // unset
+	private PokemonSpecies species;
+	private StatusProblem statusProblem; // unset
 
 	public PokemonInstanceBuilder(PokemonSpecies species) {
-		this.p = new PokemonInstance(species);
+		this.species = species;
 		// DV & EV
-		p.setDeterValues(new int[] { 0, 0, 0, 0, 0, 0 });
-		p.setEffortValues(new int[] { 0, 0, 0, 0, 0, 0 });
+		this.deterValues = new int[] { 0, 0, 0, 0, 0, 0 };
+		this.effortValues = new int[] { 0, 0, 0, 0, 0, 0 };
 		// abilitiy: choose randomly between non-hidden
 		int[] sAbilities = species.getAbilities();
 		int n = (sAbilities[1] == 0) ? 1 : 2;
 		int i = (int) Math.floor(Math.random() * n);
-		p.setAbilityId(sAbilities[i]);
-		p.setExperiencePoints(0);
-		p.setLevel(5);
+		this.abilityId = sAbilities[i];
+		this.experiencePoints = 0;
+		this.level = 5;
 		// gender
 		int gr = species.getGenderRate();
 		if (gr == -1) {
-			p.setGender(Gender.NEUTRAL);
+			this.gender = Gender.NEUTRAL;
 		} else {
 			float threshold = gr / 8f;
 			if (Math.random() < threshold) {
-				p.setGender(Gender.FEMALE);
+				this.gender = Gender.FEMALE;
 			} else {
-				p.setGender(Gender.MALE);
+				this.gender = Gender.MALE;
 			}
 		}
 		// nature
-//		int nature = (int) Math.ceil(Math.random() * 25);
+		// int nature = (int) Math.ceil(Math.random() * 25);
 		Nature nature = Nature.hardy;
 		// TODO set nature randomly
-		p.setNature(nature);
+		this.nature = nature;
 
 		// TODO add more default values
 	}
 
 	/**
-	 * Default: random between all non-hidden abilities
+	 * Default: random among all non-hidden abilities
 	 * 
 	 * @param id
 	 *            The integer value that represents the ability
 	 */
 	public PokemonInstanceBuilder setAbilityId(int id) {
-		int[] possibleAbilities = p.getSpecies().getAbilities();
+		int[] possibleAbilities = this.species.getAbilities();
 		boolean validAbility = false;
 		for (int ability : possibleAbilities) {
 			if (id == ability) {
@@ -65,9 +77,9 @@ public class PokemonInstanceBuilder {
 		if (!validAbility) {
 			throw new IllegalArgumentException("Ability id " + id
 					+ " is not possible for species "
-					+ p.getSpecies().getSpeciesId());
+					+ this.species.getSpeciesId());
 		}
-		p.setAbilityId(id);
+		this.abilityId = id;
 		return this;
 	}
 
@@ -77,7 +89,7 @@ public class PokemonInstanceBuilder {
 				throw new IllegalArgumentException(dv + " is not a valid DV");
 			}
 		}
-		p.setDeterValues(dVs);
+		this.deterValues = dVs;
 		return this;
 	}
 
@@ -92,15 +104,32 @@ public class PokemonInstanceBuilder {
 		if (evSum > 510) {
 			throw new IllegalArgumentException("Sum of EVs is over 510");
 		}
-		p.setEffortValues(eVs);
+		this.effortValues = eVs;
 		return this;
+	}
+
+	public void setGender(Gender gender) {
+		if (gender == null) {
+			throw new IllegalArgumentException("null is not a valid argument");
+		}
+		int gr = species.getGenderRate();
+		if (gender != Gender.NEUTRAL && gr == -1) {
+			throw new IllegalArgumentException("This species cannot be neutral");
+		}
+		if (gender != Gender.MALE && gr == 0) {
+			throw new IllegalArgumentException("This species cannot be male");
+		}
+		if (gender != Gender.FEMALE && gr == 8) {
+			throw new IllegalArgumentException("This species cannot be female");
+		}
+		this.gender = gender;
 	}
 
 	public PokemonInstanceBuilder setLevel(int level) {
 		if (level <= 0 || level > 100) {
 			throw new IllegalArgumentException(level + " is not a valid level");
 		}
-		p.setLevel(level);
+		this.level = level;
 		return this;
 	}
 
@@ -108,7 +137,7 @@ public class PokemonInstanceBuilder {
 		if (moves == null) {
 			throw new IllegalArgumentException("null is not a valid argument");
 		}
-		p.setMoves(moves);
+		this.moves = moves;
 		return this;
 	}
 
@@ -116,35 +145,32 @@ public class PokemonInstanceBuilder {
 		if (nature == null) {
 			throw new IllegalArgumentException("null is not a valid argument");
 		}
-		p.setNature(nature);
+		this.nature = nature;
 		return this;
 	}
 
 	/**
-	 * call this method to generate the PokemonInstance. If one or more
-	 * attributes haven't been set, this method will choose valid default values
-	 * based on the species
+	 * Creates a new PokemonInstance with previously specified attributes. If
+	 * one or more attributes haven't been set, this method will choose valid
+	 * default values based on the species' properites. Each subsequent call to
+	 * this method will return a newly created PokemonInstance, even if no
+	 * attributes have been modified since the last call.
 	 * 
 	 * @return the PokemonInstance represented by this builder
 	 */
 	public PokemonInstance makePokemon() {
-		PokemonSpecies s = p.getSpecies();
 		// ability
-		if (p.getAbilityId() == 0) {
+		if (this.abilityId == 0) {
 			// need to set id -> choose randomly between non-hidden abilities
 		}
-		// hp
-		// TODO replace by p.getStats()[hpI] once implemented and tested.
-		p.setCurrentHp(p.getStats()[Stat.HP.i()]);
 		// moves
-		if (p.getMoves() == null) {
+		if (this.moves == null) {
 			// determine four latest (by level) learnable moves
 			// TODO Test this, probably white-box!
 			Move[] moves;
-			int currentLevel = p.getLevel();
-			int[] levels = s.getLevelsForMovesLearnableByLevel();
+			int[] levels = species.getLevelsForMovesLearnableByLevel();
 			// index of the latest learnable move
-			int index = Arrays.binarySearch(levels, currentLevel);
+			int index = Arrays.binarySearch(levels, this.level);
 			if (index < 0) {
 				// no new move at this level, see javadoc of
 				// Arrays.binarySearch(..)
@@ -159,12 +185,15 @@ public class PokemonInstanceBuilder {
 					index++;
 				}
 			}
-			Move[] allMoves = s.getMovesLearnableByLevel();
+			Move[] allMoves = species.getMovesLearnableByLevel();
 			moves = Arrays.copyOfRange(allMoves, (index >= 4) ? index - 4 : 0,
 					index);
 			moves = Arrays.copyOf(moves, 4); // in case index < 3
-			p.setMoves(moves);
+			this.moves = moves;
 		}
-		return p;
+		PokemonInstance pi = new PokemonInstance(abilityId, deterValues,
+				effortValues, experiencePoints, gender, level, moves, nature,
+				nickname, species, statusProblem);
+		return pi;
 	}
 }
