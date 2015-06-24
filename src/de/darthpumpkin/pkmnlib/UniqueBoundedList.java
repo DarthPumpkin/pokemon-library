@@ -8,86 +8,96 @@ import java.util.List;
 import java.util.ListIterator;
 
 /**
- * List of {@link PokemonInstance} with a predefined maximum size (6 per
- * default) representing a player's team. A PokeTeam does not allow null
- * elements. This implies that all pokemons will always be at the head of the
- * team.
+ * List with a predefined maximum size, not allowing multiple references to the
+ * same object and not allowing null elements. This can be considered a generic
+ * abstraction of a pokemon team, but it is also applicable for a move list and
+ * similar data structures.<br>
+ * <br>
+ * The constraint of no multiple refrences can be described more explicitly as:
+ * This list does not contain any two elements e1 and e2 such that e1 == e2. It
+ * does not matter whether or not e1.equals(e2).<br>
+ * The constraint of not allowing null elements implies that all elements will
+ * always be at the head of the list.
  * 
  * @author dominik
  * 
  */
-public final class PokeTeam implements List<PokemonInstance> {
+public final class UniqueBoundedList<E> implements List<E> {
 
 	public static final int DEFAULT_MAX_SIZE = 6;
 
-	private final List<PokemonInstance> list;
+	private final List<E> list;
 	private final int maxSize;
 
 	/**
-	 * Creates a new empty team with {@value #DEFAULT_MAX_SIZE} free slots.
+	 * Creates a new empty list with {@value #DEFAULT_MAX_SIZE} free slots.
 	 */
-	public PokeTeam() {
+	public UniqueBoundedList() {
 		this(DEFAULT_MAX_SIZE);
 	}
 
 	/**
-	 * Creates a new empty team using the specified number as the upper limit of
-	 * pokemons in this team.
+	 * Creates a new empty list using the specified number as the upper limit of
+	 * elements in this list.
 	 * 
 	 * @param maxSize
-	 *            Maximum number of pokemons in this team.
+	 *            Maximum number of elements in this list.
 	 * @throws IllegalArgumentException
 	 *             If maxSize < 0
 	 */
-	public PokeTeam(int maxSize) {
-		this(new ArrayList<PokemonInstance>(), maxSize);
+	public UniqueBoundedList(int maxSize) {
+		this(new ArrayList<E>(), maxSize);
 	}
 
 	/**
-	 * Creates a new team containing the elements of the specified Collection,
+	 * Creates a new list containing the elements of the specified Collection,
 	 * in the order they are returned by the Collection's iterator, except for
 	 * null elements. Sets {@value #DEFAULT_MAX_SIZE} as the maximum number of
-	 * pokemons in this team.
+	 * elements in this list.
 	 * 
 	 * @param coll
-	 *            Collection whose elements are to be placed in this team.
+	 *            Collection whose elements are to be placed in this list.
 	 * @throws MaximumSizeExceededException
 	 *             if coll.size() > {@value #DEFAULT_MAX_SIZE}
 	 */
-	public PokeTeam(Collection<? extends PokemonInstance> coll) {
+	public UniqueBoundedList(Collection<? extends E> coll) {
 		this(coll, DEFAULT_MAX_SIZE);
 	}
 
 	/**
-	 * Creates a new team containing the elements of the specified Collection,
+	 * Creates a new list containing the elements of the specified Collection,
 	 * in the order they are returned by the Collection's iterator, except for
-	 * null elements. Sets the specified number as the upper limit of pokemons
-	 * in this team.
+	 * null elements. Sets the specified number as the upper limit of elements
+	 * in this list.
 	 * 
 	 * @param coll
-	 *            Collection whose elements are to be placed in this team.
+	 *            Collection whose elements are to be placed in this list.
 	 * @param maxSize
-	 *            Maximum number of pokemons in this team.
+	 *            Maximum number of elements in this list.
 	 * @throws IllegalArgumentException
 	 *             if maxSize < 0
 	 * @throws MaximumSizeExceededException
 	 *             if coll.size() > maxSize
 	 */
-	public PokeTeam(Collection<? extends PokemonInstance> coll, int maxSize) {
+	public UniqueBoundedList(Collection<? extends E> coll, int maxSize) {
 		if (maxSize < 0) {
 			throw new IllegalArgumentException(
 					"maxSize must be a positive int, but was " + maxSize);
 		}
 		this.maxSize = maxSize;
+		/*
+		 * Minimize memory allocated by ArrayList: If maxSize < 10, we don't
+		 * need to use the ArrayList's default allocation size of 10.
+		 */
 		int initialCapacity = maxSize < 10 ? maxSize : 10;
 		list = new ArrayList<>(initialCapacity);
 		addAll(coll);
 	}
 
 	/**
-	 * Returns the upper limit for this team's size.
+	 * Returns the upper limit for this list's size.
 	 */
-	public int getMaxSize() {
+	public int maxSize() {
 		return this.maxSize;
 	}
 
@@ -127,7 +137,7 @@ public final class PokeTeam implements List<PokemonInstance> {
 	 * @see java.util.List#iterator()
 	 */
 	@Override
-	public Iterator<PokemonInstance> iterator() {
+	public Iterator<E> iterator() {
 		return list.iterator();
 	}
 
@@ -152,19 +162,18 @@ public final class PokeTeam implements List<PokemonInstance> {
 	}
 
 	/**
-	 * If there is space left in the team, this method adds the given
-	 * PokemonInstance to the end of this team, as specified in
-	 * {@link List#add(Object)}. Otherwise throws a
-	 * {@link MaximumSizeExceededException}.
+	 * If there is space left in this list, this method adds the given element
+	 * to the end of this list, as specified in {@link List#add(Object)}.
+	 * Otherwise throws a {@link MaximumSizeExceededException}.
 	 * 
 	 * @throws MaximumSizeExceededException
-	 *             If there is no space left in the team.
+	 *             If there is no space left in the list.
 	 * @throws NullPointerException
 	 *             if e == null
-	 * @see List#add(PokemonInstance)
+	 * @see List#add(E)
 	 */
 	@Override
-	public boolean add(PokemonInstance e) {
+	public boolean add(E e) {
 		add(list.size(), e);
 		return true;
 	}
@@ -190,46 +199,50 @@ public final class PokeTeam implements List<PokemonInstance> {
 	}
 
 	/**
-	 * If there is enough space left in the team, this method adds the given
-	 * Collection of PokemonInstances to the end of this team, as specified in
-	 * {@link List#addAll(Collection)}. Otherwise throws a
+	 * If there is enough space left in this list, this method adds the elements
+	 * of given Collection to the end of this list, as specified in
+	 * {@link #addAll(Collection)}. Otherwise throws a
 	 * {@link MaximumSizeExceededException}. Null elmements are not addded to
-	 * the team.
+	 * the list.
 	 * 
 	 * @throws MaximumSizeExceededException
-	 *             If there is not enough space left in the team to add all
+	 *             If there is not enough space left in the list to add all
 	 *             elements from the Collection, i.e. if size()+c.size() >=
-	 *             maxSize
+	 *             {@link #maxSize()}
 	 * @see List#add(Collection)
 	 */
 	@Override
-	public boolean addAll(Collection<? extends PokemonInstance> c) {
+	public boolean addAll(Collection<? extends E> c) {
 		return addAll(list.size(), c);
 	}
 
 	/**
-	 * If there is enough space left in the team, this method adds the given
-	 * Collection of PokemonInstances at specified index to this team, as
-	 * specified in {@link List#addAll(Collection)}. Otherwise throws a
+	 * If there is enough space left in the list, this method adds the elements
+	 * of given Collection at specified index to this list, as specified in
+	 * {@link #addAll(Collection)}. Otherwise throws a
 	 * {@link MaximumSizeExceededException}. Null elmements are not addded to
-	 * the team.
+	 * the list. If index > {@link #size()}, the elements will be appended to
+	 * the end of this list. No {@link IndexOutOfBoundsException} is thrown.
 	 * 
 	 * @throws MaximumSizeExceededException
-	 *             If there is not enough space left in the team to add all
-	 *             elements from the Collection, i.e. if size()+c.size() >=
-	 *             maxSize
+	 *             If there is not enough space left in the list to add all
+	 *             elements from the Collection, i.e. if {@link #size()}
+	 *             +c.size() >= maxSize
 	 * @see List#addAll(int, Collection)
 	 */
 	@Override
-	public boolean addAll(int index, Collection<? extends PokemonInstance> c) {
+	public boolean addAll(int index, Collection<? extends E> c) {
 		if (c.isEmpty()) {
 			return false;
 		}
-		Collection<? extends PokemonInstance> cWithoutNull = new ArrayList<>(c);
+		Collection<? extends E> cWithoutNull = new ArrayList<>(c);
 		cWithoutNull.removeAll(Collections.singleton(null));
 		if (list.size() + cWithoutNull.size() >= maxSize) {
 			throw new MaximumSizeExceededException(maxSize, list.size(),
 					c.size());
+		}
+		if (index > size()) {
+			index = size();
 		}
 		return list.addAll(index, cWithoutNull);
 	}
@@ -270,7 +283,7 @@ public final class PokeTeam implements List<PokemonInstance> {
 	 * @see java.util.List#get(int)
 	 */
 	@Override
-	public PokemonInstance get(int index) {
+	public E get(int index) {
 		return list.get(index);
 	}
 
@@ -280,24 +293,25 @@ public final class PokeTeam implements List<PokemonInstance> {
 	 * @see java.util.List#set(int, java.lang.Object)
 	 */
 	@Override
-	public PokemonInstance set(int index, PokemonInstance element) {
+	public E set(int index, E element) {
 		return list.set(index, element);
 	}
 
 	/**
-	 * If there is space left in the team, this method adds the given
-	 * PokemonInstance at specified index to this team, as specified in
-	 * {@link List#add(Object)}. Otherwise throws a
-	 * {@link MaximumSizeExceededException}.
+	 * If there is space left in the list, this method adds the given element at
+	 * specified index to this list, as specified in {@link List#add(Object)}.
+	 * Otherwise throws a {@link MaximumSizeExceededException}. If index >
+	 * {@link #size()}, the elements will be appended to the end of this list.
+	 * No {@link IndexOutOfBoundsException} is thrown.
 	 * 
 	 * @throws MaximumSizeExceededException
-	 *             If there is no space left in the team.
+	 *             If there is no space left in the list.
 	 * @throws NullPointerException
 	 *             if element == null
-	 * @see List#add(int, PokemonInstance)
+	 * @see List#add(int, E)
 	 */
 	@Override
-	public void add(int index, PokemonInstance element) {
+	public void add(int index, E element) {
 		if (element == null) {
 			throw new NullPointerException(
 					"A Team does not store null elements");
@@ -311,7 +325,7 @@ public final class PokeTeam implements List<PokemonInstance> {
 	 * @see java.util.List#remove(int)
 	 */
 	@Override
-	public PokemonInstance remove(int index) {
+	public E remove(int index) {
 		return list.remove(index);
 	}
 
@@ -341,7 +355,7 @@ public final class PokeTeam implements List<PokemonInstance> {
 	 * @see java.util.List#listIterator()
 	 */
 	@Override
-	public ListIterator<PokemonInstance> listIterator() {
+	public ListIterator<E> listIterator() {
 		return list.listIterator();
 	}
 
@@ -351,7 +365,7 @@ public final class PokeTeam implements List<PokemonInstance> {
 	 * @see java.util.List#listIterator(int)
 	 */
 	@Override
-	public ListIterator<PokemonInstance> listIterator(int index) {
+	public ListIterator<E> listIterator(int index) {
 		return list.listIterator(index);
 	}
 
@@ -361,7 +375,7 @@ public final class PokeTeam implements List<PokemonInstance> {
 	 * @see java.util.List#subList(int, int)
 	 */
 	@Override
-	public List<PokemonInstance> subList(int fromIndex, int toIndex) {
+	public List<E> subList(int fromIndex, int toIndex) {
 		return list.subList(fromIndex, toIndex);
 	}
 
