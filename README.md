@@ -1,13 +1,14 @@
-# What it is
-This library provides a starting point for all future pokemon implementations. It is designed to take a bunch of effort off the game developer, be straight-forward and easy to use.
+# Pokémon Library
+This library implements core functionality from the Pokémon game series. It is highly reusable and portable. It fits into any Android application but does its job equally well as the backbone of a battle server with thousands of users.
+
+Main features include:
+* Battle engine for single battles, double battles, triple battles and any other arbitrary player constellation
+* Extendable AI framework with player implementations mimicking the intelligence level of wild pokemons, trainers and gym leaders
+* Safe and efficient data structures for all basic entities
+*
 
 # Current state
-Still early but constantly growing.
+This project is in its early development phase. Soon it will be possible to simulate a simple battle.
 
 # How to run
-No dependencies, no gradle, just go for it: Clone the repo and run the JUnit Test Suite `de.darthpumpkin.pkmnlib.test.AllTests`. Currently, testing and extending focus is on the Pokemon classes `PokemonSpecies`, `PokemonInstance`, `PokmeonBattleInstance` and their respective factories and builders.
-
-# How to contribute
-Pick one of the code lines that are marked with `// TODO` and implement the missing functionality. Currently, you will find most of these in `de.darthpumpkin.pkmnlib.battle.RegularBattle`. Don't forget to submit the pull requests.
-
-Of course any other contribution is appreciated, too!
+Gradle makes things easier for you, but is not required. Clone this repository with the `--recursive` flag, this will fetch the subrepositories for you (see [here](http://git-scm.com/book/en/v2/Git-Tools-Submodules#Cloning-a-Project-with-Submodules) for more). Run `gradle eclipse` if you would like Gradle to generate the Eclipse project files for you. To run the unit tests, do `gradle test` or just execute the JUnit Test Suite `AllTests.java`.
