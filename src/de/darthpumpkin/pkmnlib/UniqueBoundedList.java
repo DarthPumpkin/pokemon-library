@@ -3,9 +3,13 @@ package de.darthpumpkin.pkmnlib;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ListMultimap;
 
 /**
  * List with a predefined maximum size, not allowing multiple references to the
@@ -26,7 +30,11 @@ public final class UniqueBoundedList<E> implements List<E> {
 
 	public static final int DEFAULT_MAX_SIZE = 6;
 
+	// Actual list with entries in correct order
 	private final List<E> list;
+	// Maps a hash value to the list of entries with that hash value (Idea: two
+	// entries with identical hash values are likely to be identical)
+	private final ListMultimap<Integer, E> hashes;
 	private final int maxSize;
 
 	/**
@@ -91,6 +99,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 		 */
 		int initialCapacity = maxSize < 10 ? maxSize : 10;
 		list = new ArrayList<>(initialCapacity);
+		hashes = ArrayListMultimap.create(initialCapacity, 1);
 		addAll(coll);
 	}
 
@@ -128,7 +137,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 	 */
 	@Override
 	public boolean contains(Object o) {
-		return list.contains(o);
+		return hashes.values().contains(o);
 	}
 
 	/*
@@ -185,6 +194,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 	 */
 	@Override
 	public boolean remove(Object o) {
+		hashes.values().remove(o);
 		return list.remove(o);
 	}
 
@@ -195,7 +205,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 	 */
 	@Override
 	public boolean containsAll(Collection<?> c) {
-		return list.containsAll(c);
+		return hashes.values().containsAll(c);
 	}
 
 	/**
@@ -209,6 +219,8 @@ public final class UniqueBoundedList<E> implements List<E> {
 	 *             If there is not enough space left in the list to add all
 	 *             elements from the Collection, i.e. if size()+c.size() >=
 	 *             {@link #maxSize()}
+	 * @throws NullPointerException
+	 *             If c == null
 	 * @see List#add(Collection)
 	 */
 	@Override
@@ -228,6 +240,8 @@ public final class UniqueBoundedList<E> implements List<E> {
 	 *             If there is not enough space left in the list to add all
 	 *             elements from the Collection, i.e. if {@link #size()}
 	 *             +c.size() >= maxSize
+	 * @throws NullPointerException
+	 *             If c == null
 	 * @see List#addAll(int, Collection)
 	 */
 	@Override
@@ -235,14 +249,35 @@ public final class UniqueBoundedList<E> implements List<E> {
 		if (c.isEmpty()) {
 			return false;
 		}
-		Collection<? extends E> cWithoutNull = new ArrayList<>(c);
+		// Step 1: Remove null elements
+		Collection<? extends E> cWithoutNull = Collections
+				.synchronizedCollection(new HashSet<E>(c));
 		cWithoutNull.removeAll(Collections.singleton(null));
-		if (list.size() + cWithoutNull.size() >= maxSize) {
+
+		// Step 2: Remove identical elements
+		synchronized (cWithoutNull) {
+			REMOVE_DUPLICATE_REFERENCES: for (E newElem : cWithoutNull) {
+				List<E> elementsWithSameHashCode = hashes.get(newElem
+						.hashCode());
+				for (E elemSameHash : elementsWithSameHashCode) {
+					if (newElem == elemSameHash) {
+						cWithoutNull.remove(newElem);
+						continue REMOVE_DUPLICATE_REFERENCES;
+					}
+				}
+			}
+		}
+		// Step 3: Check size
+		if (list.size() + cWithoutNull.size() > maxSize) {
 			throw new MaximumSizeExceededException(maxSize, list.size(),
 					c.size());
 		}
 		if (index > size()) {
 			index = size();
+		}
+		// Step 4: Add entries
+		for (E e : cWithoutNull) {
+			hashes.put(e.hashCode(), e);
 		}
 		return list.addAll(index, cWithoutNull);
 	}
@@ -254,6 +289,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 	 */
 	@Override
 	public boolean removeAll(Collection<?> c) {
+		hashes.values().removeAll(c);
 		return list.removeAll(c);
 	}
 
@@ -264,6 +300,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 	 */
 	@Override
 	public boolean retainAll(Collection<?> c) {
+		hashes.values().retainAll(c);
 		return list.retainAll(c);
 	}
 
@@ -274,6 +311,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 	 */
 	@Override
 	public void clear() {
+		hashes.clear();
 		list.clear();
 	}
 
@@ -294,7 +332,10 @@ public final class UniqueBoundedList<E> implements List<E> {
 	 */
 	@Override
 	public E set(int index, E element) {
-		return list.set(index, element);
+		E previous = list.set(index, element);
+		hashes.remove(previous.hashCode(), previous);
+		hashes.put(element.hashCode(), element);
+		return previous;
 	}
 
 	/**
@@ -326,7 +367,9 @@ public final class UniqueBoundedList<E> implements List<E> {
 	 */
 	@Override
 	public E remove(int index) {
-		return list.remove(index);
+		E removedElement = list.remove(index);
+		hashes.remove(removedElement.hashCode(), removedElement);
+		return removedElement;
 	}
 
 	/*
@@ -374,6 +417,8 @@ public final class UniqueBoundedList<E> implements List<E> {
 	 * 
 	 * @see java.util.List#subList(int, int)
 	 */
+	// TODO return a list that fulfills the specification. Currently, the
+	// returned list does not modify the multimap.
 	@Override
 	public List<E> subList(int fromIndex, int toIndex) {
 		return list.subList(fromIndex, toIndex);
