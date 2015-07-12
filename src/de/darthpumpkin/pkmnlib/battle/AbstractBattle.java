@@ -1,6 +1,5 @@
 package de.darthpumpkin.pkmnlib.battle;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +10,7 @@ import java.util.Map;
  * @author dominik
  * 
  */
-public abstract class AbstractBattle implements Serializable {
+public abstract class AbstractBattle {
 
 	protected final Player[] players;
 	protected Weather weather;

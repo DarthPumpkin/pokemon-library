@@ -1,6 +1,5 @@
 package de.darthpumpkin.pkmnlib;
 
-import java.io.Serializable;
 import java.util.EnumSet;
 
 import net.alexmack.poketypes.Poketype;
@@ -16,7 +15,7 @@ import net.alexmack.poketypes.Poketype;
  * 
  */
 
-public class Move implements Serializable {
+public class Move {
 
 	public enum DamageClass {
 		PHYSICAL, SPECIAL, STATUS

@@ -1,6 +1,5 @@
 package de.darthpumpkin.pkmnlib;
 
-import java.io.Serializable;
 
 /**
  * An AtomarMove is an element in the Move tree (see diagram in the doc folder).
@@ -9,7 +8,7 @@ import java.io.Serializable;
  * @author dominik
  * 
  */
-public class AtomarMove implements Serializable {
+public class AtomarMove {
 
 	private int probability;
 	private int effectId;

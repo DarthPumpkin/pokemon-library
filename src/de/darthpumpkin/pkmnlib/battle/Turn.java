@@ -1,11 +1,9 @@
 package de.darthpumpkin.pkmnlib.battle;
 
-import java.io.Serializable;
-
 import de.darthpumpkin.pkmnlib.Item;
 import de.darthpumpkin.pkmnlib.Move;
 
-public class Turn implements Serializable, Comparable<Turn> {
+public class Turn implements Comparable<Turn> {
 
 	/**
 	 * RUN > SWAP_PKMN > USE_ITEM > FIGHT

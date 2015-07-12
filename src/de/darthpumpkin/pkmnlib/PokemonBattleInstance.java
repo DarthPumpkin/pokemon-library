@@ -1,6 +1,5 @@
 package de.darthpumpkin.pkmnlib;
 
-import java.io.Serializable;
 
 /**
  * Represents a temporary image of a {@link PokemonInstance} for use in a
@@ -12,7 +11,7 @@ import java.io.Serializable;
  * @author dominik
  * 
  */
-public class PokemonBattleInstance implements Serializable, ItemContainer {
+public class PokemonBattleInstance implements ItemContainer {
 
 	private PokemonInstance instance;
 	private int[] temporaryStatModifiers; // from -6 to 6; reset after
@@ -22,6 +21,9 @@ public class PokemonBattleInstance implements Serializable, ItemContainer {
 
 	public PokemonBattleInstance(PokemonInstance instance) {
 		this.instance = instance;
+		this.temporaryStatModifiers = new int[8];
+		this.flying = false;
+		this.confused = false;
 	}
 
 	/**

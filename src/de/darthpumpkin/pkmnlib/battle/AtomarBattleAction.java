@@ -1,7 +1,5 @@
 package de.darthpumpkin.pkmnlib.battle;
 
-import java.io.Serializable;
-
 import de.darthpumpkin.pkmnlib.AtomarMove;
 
 /**
@@ -13,8 +11,7 @@ import de.darthpumpkin.pkmnlib.AtomarMove;
  * @author dominik
  * 
  */
-@SuppressWarnings("serial")
-public class AtomarBattleAction implements Serializable {
+public class AtomarBattleAction {
 
 	/**
 	 * 

@@ -3,15 +3,13 @@
  */
 package de.darthpumpkin.pkmnlib.battle;
 
-import java.io.Serializable;
-
 import de.darthpumpkin.pkmnlib.PokemonInstance;
 
 /**
  * @author dominik
  *
  */
-public interface Player extends Serializable {
+public interface Player {
 
 	/**
 	 * Make a turn.

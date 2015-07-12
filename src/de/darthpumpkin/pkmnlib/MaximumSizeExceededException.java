@@ -9,6 +9,8 @@ package de.darthpumpkin.pkmnlib;
  */
 public class MaximumSizeExceededException extends RuntimeException {
 
+	private static final long serialVersionUID = 6786299173741049271L;
+	
 	private final Integer maxSize;
 	private final Integer previousSize;
 	private final Integer newElements;

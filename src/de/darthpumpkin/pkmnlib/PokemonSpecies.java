@@ -1,9 +1,6 @@
 package de.darthpumpkin.pkmnlib;
 
 import static java.lang.Math.pow;
-
-import java.io.Serializable;
-
 import net.alexmack.poketypes.Poketype;
 import net.alexmack.poketypes.PoketypeSet;
 
@@ -15,7 +12,7 @@ import net.alexmack.poketypes.PoketypeSet;
  * @author dominik
  * 
  */
-public class PokemonSpecies implements Serializable {
+public class PokemonSpecies {
 
 	private int[] abilities; // 0-1: regular, 2-3: hidden
 	private int baseFriendship;

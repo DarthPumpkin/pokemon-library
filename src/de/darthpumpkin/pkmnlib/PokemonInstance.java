@@ -1,6 +1,5 @@
 package de.darthpumpkin.pkmnlib;
 
-import java.io.Serializable;
 
 /**
  * Use a {@link PokemonInstanceBuilder} to create a PokemonInstance from a
@@ -11,7 +10,7 @@ import java.io.Serializable;
  * 
  */
 
-public class PokemonInstance implements Serializable, ItemContainer {
+public class PokemonInstance implements ItemContainer {
 
 	private int abilityId;
 	private int currentHp;
@@ -27,16 +26,58 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	private StatusProblem statusProblem; // null if there is none
 
 	/**
-	 * should only be called by {@link PokemonInstanceBuilder}.
+	 * Caution: Should only be called by {@link PokemonInstanceBuilder}. This
+	 * creates a partially initialized object, with just its species set. All
+	 * other attributes are unset. This is highly unsafe.
 	 * 
 	 * @param species
 	 */
-	/* package */PokemonInstance(PokemonSpecies species) {
+	PokemonInstance(PokemonSpecies species) {
 		this.species = species;
 	}
 
 	/**
-	 * subtracts damage from this pkmn's current hp. Set to 0 if damage > hp
+	 * Creates a PokemonInstance with all specified attributes, setting its
+	 * current hp to its maximum hp. None of the attributes are checked for
+	 * validity.<br>
+	 * <br>
+	 * Note that the more convenient and safe way of creating PokemonInstance
+	 * objects is by using {@link PokemonBuilder}.
+	 * 
+	 * @param abilityId
+	 * @param deterValues
+	 * @param effortValues
+	 * @param experiencePoints
+	 * @param gender
+	 * @param level
+	 * @param moves
+	 * @param nature
+	 * @param nickname
+	 * @param species
+	 * @param statusProblem
+	 */
+	PokemonInstance(int abilityId, int[] deterValues, int[] effortValues,
+			int experiencePoints, Gender gender, int level, Move[] moves,
+			Nature nature, String nickname, PokemonSpecies species,
+			StatusProblem statusProblem) {
+		this.abilityId = abilityId;
+		this.deterValues = deterValues;
+		this.effortValues = effortValues;
+		this.experiencePoints = experiencePoints;
+		this.gender = gender;
+		this.level = level;
+		this.moves = moves;
+		this.nature = nature;
+		this.nickname = nickname;
+		this.species = species;
+		this.statusProblem = statusProblem;
+		// Full HP as default
+		this.currentHp = getStats()[Stat.HP.i()];
+	}
+
+	/**
+	 * subtracts damage from this pkmn's current hp. Set to 0 if damage >
+	 * {@link #getCurrentHp()}
 	 * 
 	 * @param damage
 	 *            damage to be inflicted
@@ -172,9 +213,8 @@ public class PokemonInstance implements Serializable, ItemContainer {
 		int[] stats = new int[6];
 		int hpI = Stat.HP.i();
 		stats[0] = (int) ((getDeterValues()[hpI] + 2
-						* species.getBaseStats()[hpI] + getEffortValues()[hpI]
-						/ 4 + 100)
-						* getLevel() / 100 + 10);
+				* species.getBaseStats()[hpI] + getEffortValues()[hpI] / 4 + 100)
+				* getLevel() / 100 + 10);
 		for (int i = 1; i < 6; i++) {
 			stats[i] = (int) (((getDeterValues()[i] + 2
 					* species.getBaseStats()[i] + getEffortValues()[i] / 4)
@@ -217,8 +257,9 @@ public class PokemonInstance implements Serializable, ItemContainer {
 	}
 
 	/**
-	 * Caution: this method does not automatically level up. This is not
-	 * intended for regular xp gain. For obtaining experience points, see
+	 * Caution: this method does not automatically level up, thus it may leave
+	 * the PokemonInstance in an illegal state. This is not intended for regular
+	 * xp gain. For obtaining experience points, see
 	 * {@link PokemonInstance#obtainExperiencePoints(int)}
 	 * 
 	 * @param experiencePoints

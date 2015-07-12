@@ -1,8 +1,7 @@
 package de.darthpumpkin.pkmnlib;
 
-import java.io.Serializable;
 
-public class Bag implements Serializable, ItemContainer {
+public class Bag implements ItemContainer {
 
 	@Override
 	public void remove(Item item) {
