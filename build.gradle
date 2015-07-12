@@ -6,14 +6,12 @@ sourceCompatibility = 1.7
 sourceSets {
     main {
         java {
-            srcDir 'src'
             exclude '**/RegularBattle.java'
             srcDir 'poketypes/src'
         }
     }
     test {
         java {
-            srcDir 'test'
             exclude '**/AllTests.java'
         }
     }
@@ -24,5 +22,6 @@ repositories {
 }
 
 dependencies {
+    compile group: 'com.google.guava', name: 'guava', version: '18.0'
     testCompile group: 'junit', name: 'junit', version: '4.+'
 }

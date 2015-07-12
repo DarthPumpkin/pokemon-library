@@ -1,4 +1,4 @@
-package de.darthpumpkin.pkmnlib.test;
+package de.darthpumpkin.pkmnlib;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;

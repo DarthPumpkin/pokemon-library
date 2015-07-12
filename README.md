@@ -5,7 +5,6 @@ Main features include:
 * Battle engine for single battles, double battles, triple battles and any other arbitrary player constellation
 * Extendable AI framework with player implementations mimicking the intelligence level of wild pokemons, trainers and gym leaders
 * Safe and efficient data structures for all basic entities
-*
 
 # Current state
 This project is in its early development phase. Soon it will be possible to simulate a simple battle.

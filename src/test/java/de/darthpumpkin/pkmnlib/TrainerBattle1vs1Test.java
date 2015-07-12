@@ -1,7 +1,7 @@
 /**
  * 
  */
-package de.darthpumpkin.pkmnlib.test;
+package de.darthpumpkin.pkmnlib;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
