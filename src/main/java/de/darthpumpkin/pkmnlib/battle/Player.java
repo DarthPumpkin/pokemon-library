@@ -4,6 +4,7 @@
 package de.darthpumpkin.pkmnlib.battle;
 
 import de.darthpumpkin.pkmnlib.PokemonInstance;
+import de.darthpumpkin.pkmnlib.UniqueBoundedList;
 
 /**
  * @author dominik
@@ -19,11 +20,11 @@ public interface Player {
 	public Turn makeTurn();
 
 	/**
-	 * get array of PokemonInstances that are in the player's team.
+	 * get list of PokemonInstances that are in the player's team.
 	 * 
 	 * @return
 	 */
-	public PokemonInstance[] getTeam();
+	public UniqueBoundedList<PokemonInstance> getTeam();
 	
 	/**
 	 * Switch current pkmn. Is called when a pkmn faints

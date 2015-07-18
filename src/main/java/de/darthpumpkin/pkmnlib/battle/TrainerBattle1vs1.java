@@ -49,8 +49,7 @@ public class TrainerBattle1vs1 extends AbstractBattle {
 			for (PokemonInstance p : players[i].getTeam()) {
 				if (p.isUsable()) {
 					activePkmns[i] = new PokemonBattleInstance(p);
-					((SingleBattlePlayer[]) players)[i]
-							.setActivePokemon(activePkmns[i]);
+					getPlayers()[i].setActivePokemon(activePkmns[i]);
 					break;
 				}
 			}
@@ -327,7 +326,7 @@ public class TrainerBattle1vs1 extends AbstractBattle {
 			default:
 			}
 			for (int i = 0; i < 2; i++) {
-				SingleBattlePlayer sbp = (SingleBattlePlayer) players[i];
+				SingleBattlePlayer sbp = getPlayers()[i];
 				PokemonInstance pi = sbp.getActivePokemon().getInstance();
 				if (!pi.isUsable()) {
 					PokemonInstance newPi = sbp.forceSwitch(pi);
@@ -358,6 +357,11 @@ public class TrainerBattle1vs1 extends AbstractBattle {
 
 	public PokemonBattleInstance[] getActivePkmns() {
 		return activePkmns;
+	}
+
+	@Override
+	public SingleBattlePlayer[] getPlayers() {
+		return (SingleBattlePlayer[]) super.getPlayers();
 	}
 
 }

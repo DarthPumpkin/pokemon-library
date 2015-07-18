@@ -66,8 +66,10 @@ public class PokemonSpeciesTest {
 	/**
 	 * Test method for
 	 * {@link de.darthpumpkin.pkmnlib.PokemonSpecies#isOfType(de.darthpumpkin.pkmnlib.Type)}
-	 * .
+	 * 
+	 * @deprecated because {@link PokemonSpecies#isOfType(Type)} is deprecated .
 	 */
+	@Deprecated
 	@Test
 	public void testIsOfType() {
 		Poketype grass = Poketype.GRASS;
@@ -82,7 +84,10 @@ public class PokemonSpeciesTest {
 	 * Tests
 	 * {@link de.darthpumpkin.pkmnlib.PokemonSpecies#isOfType(de.darthpumpkin.pkmnlib.Type)}
 	 * for the correct handling of null arguments
+	 * 
+	 * @deprecated because {@link PokemonSpecies#isOfType(Type)} is deprecated .
 	 */
+	@Deprecated
 	@Test(expected = IllegalArgumentException.class)
 	public void testIsOfTypeNull() {
 		s.isOfType(null);

@@ -9,6 +9,7 @@ import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -16,11 +17,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import de.darthpumpkin.pkmnlib.DummySpeciesFactory;
-import de.darthpumpkin.pkmnlib.PokemonBattleInstance;
-import de.darthpumpkin.pkmnlib.PokemonInstance;
-import de.darthpumpkin.pkmnlib.PokemonInstanceBuilder;
-import de.darthpumpkin.pkmnlib.PokemonSpecies;
 import de.darthpumpkin.pkmnlib.battle.DummyPlayer;
 import de.darthpumpkin.pkmnlib.battle.Player;
 import de.darthpumpkin.pkmnlib.battle.SingleBattlePlayer;
@@ -71,10 +67,12 @@ public class TrainerBattle1vs1Test {
 	 */
 	@Test
 	public void testStart() {
-		PokemonInstance[] team1 = new PokemonInstance[] { new PokemonInstanceBuilder(
-				bulbaSpecies).setLevel(1).makePokemon() };
-		PokemonInstance[] team2 = new PokemonInstance[] { new PokemonInstanceBuilder(
-				bulbaSpecies).setLevel(1).makePokemon() };
+		PokemonInstanceBuilder b = new PokemonInstanceBuilder(bulbaSpecies)
+				.setLevel(1);
+		UniqueBoundedList<PokemonInstance> team1 = new UniqueBoundedList<>();
+		team1.add(b.makePokemon());
+		UniqueBoundedList<PokemonInstance> team2 = new UniqueBoundedList<>();
+		team2.add(b.makePokemon());
 		SingleBattlePlayer[] players = new DummyPlayer[] {
 				new DummyPlayer(team1), new DummyPlayer(team2) };
 		TrainerBattle1vs1 battle = new TrainerBattle1vs1(players,
@@ -82,8 +80,8 @@ public class TrainerBattle1vs1Test {
 		assertEquals(battle.getWeather(), Weather.NORMAL);
 
 		battle.start();
-		assertSame(battle.getActivePkmns()[0].getInstance(), team1[0]);
-		assertSame(battle.getActivePkmns()[1].getInstance(), team2[0]);
+		assertSame(battle.getActivePkmns()[0].getInstance(), team1.get(0));
+		assertSame(battle.getActivePkmns()[1].getInstance(), team2.get(0));
 		assertTrue(battle.isActive());
 	}
 
@@ -135,17 +133,18 @@ public class TrainerBattle1vs1Test {
 
 	/**
 	 * Test method for
-	 * {@link de.darthpumpkin.pkmnlib.battle.TrainerBattle1vs1#doTurn()}. 
-	 * 3rd case: first bulbasaur faints
+	 * {@link de.darthpumpkin.pkmnlib.battle.TrainerBattle1vs1#doTurn()}. 3rd
+	 * case: first bulbasaur faints, battle ends
 	 */
 	@Test
-	public void testDoTurnFaint() {
+	public void testDoTurnFaintFinish() {
 		TrainerBattle1vs1 battle = makeEasyBulbaBattle(1);
 		battle.start();
-		SingleBattlePlayer[] players = (SingleBattlePlayer[]) battle.getPlayers();
-		PokemonInstance weakPkmn = players[0].getActivePokemon().getInstance(); 
+		SingleBattlePlayer[] players = (SingleBattlePlayer[]) battle
+				.getPlayers();
+		PokemonInstance weakPkmn = players[0].getActivePokemon().getInstance();
 		weakPkmn.applyDamage(10);
-		assertEquals(1, players[0].getTeam()[0].getCurrentHp());
+		assertEquals(1, players[0].getTeam().get(0).getCurrentHp());
 		HashMap<Player, Turn> turns = new HashMap<Player, Turn>();
 		for (Player p : players) {
 			turns.put(p, p.makeTurn());
@@ -156,16 +155,46 @@ public class TrainerBattle1vs1Test {
 		assertFalse(battle.isActive());
 	}
 
+	/**
+	 * Test method for
+	 * {@link de.darthpumpkin.pkmnlib.battle.TrainerBattle1vs1#doTurn()}. 4th
+	 * case: bulbasaur faints, new bulbasaur is sent in
+	 */
+	@Test
+	public void testDoTurnFaintNotFinish() {
+		TrainerBattle1vs1 battle = makeEasyBulbaBattle(1);
+		SingleBattlePlayer[] players = battle.getPlayers();
+		SingleBattlePlayer playerWith2Pkmn = battle.getPlayers()[0];
+		SingleBattlePlayer playerWith1Pkmn = battle.getPlayers()[1];
+		PokemonInstance scndBulba = new PokemonInstanceBuilder(bulbaSpecies)
+				.setLevel(1).makePokemon();
+		playerWith2Pkmn.getTeam().add(scndBulba);
+		playerWith2Pkmn.getTeam().get(0).applyDamage(10);
+		battle.start();
+		Map<Player, Turn> turns = new HashMap<Player, Turn>();
+		for (Player p : players) {
+			turns.put(p, p.makeTurn());
+		}
+		battle.doTurn(turns);
+		assertFalse(playerWith2Pkmn.getTeam().get(0).isUsable());
+		assertSame(scndBulba, playerWith2Pkmn.getActivePokemon()
+				.getInstance());
+		assertSame(playerWith1Pkmn.getTeam().get(0),
+				playerWith1Pkmn.getActivePokemon().getInstance());
+		assertEquals(11, scndBulba.getCurrentHp());
+		assertTrue(battle.isActive());
+	}
+
 	// TODO more test cases for doTurn()
 
 	private TrainerBattle1vs1 makeEasyBulbaBattle(int level) {
-		PokemonInstance[] team1 = new PokemonInstance[] { new PokemonInstanceBuilder(
-				bulbaSpecies).setLevel(level).makePokemon() };
-		PokemonInstance[] team2 = new PokemonInstance[] { new PokemonInstanceBuilder(
-				bulbaSpecies).setLevel(level).makePokemon() };
+		PokemonInstanceBuilder b = new PokemonInstanceBuilder(bulbaSpecies).setLevel(level);
+		UniqueBoundedList<PokemonInstance> team1 = new UniqueBoundedList<>();
+		team1.add(b.makePokemon());
+		UniqueBoundedList<PokemonInstance> team2 = new UniqueBoundedList<>();
+		team2.add(b.makePokemon());
 		SingleBattlePlayer[] players = new DummyPlayer[] {
 				new DummyPlayer(team1), new DummyPlayer(team2) };
 		return new TrainerBattle1vs1(players, Weather.NORMAL);
 	}
-
 }

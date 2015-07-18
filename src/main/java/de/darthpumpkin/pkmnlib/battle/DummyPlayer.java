@@ -5,6 +5,7 @@ package de.darthpumpkin.pkmnlib.battle;
 
 import de.darthpumpkin.pkmnlib.PokemonBattleInstance;
 import de.darthpumpkin.pkmnlib.PokemonInstance;
+import de.darthpumpkin.pkmnlib.UniqueBoundedList;
 
 /**
  * @author dominik
@@ -12,10 +13,10 @@ import de.darthpumpkin.pkmnlib.PokemonInstance;
  */
 public class DummyPlayer implements SingleBattlePlayer {
 
-	private PokemonInstance[] team;
+	private UniqueBoundedList<PokemonInstance> team;
 	private PokemonBattleInstance activePokemon;
 
-	public DummyPlayer(PokemonInstance[] team) {
+	public DummyPlayer(UniqueBoundedList<PokemonInstance> team) {
 		this.team = team;
 	}
 
@@ -30,7 +31,7 @@ public class DummyPlayer implements SingleBattlePlayer {
 	}
 
 	@Override
-	public PokemonInstance[] getTeam() {
+	public UniqueBoundedList<PokemonInstance> getTeam() {
 		return team;
 	}
 
