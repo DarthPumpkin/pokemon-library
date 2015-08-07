@@ -1,5 +1,6 @@
 package de.darthpumpkin.pkmnlib;
 
+import de.darthpumpkin.pkmnlib.Move.DamageClass;
 import net.alexmack.poketypes.Poketype;
 import net.alexmack.poketypes.PoketypeSet;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -56,6 +57,9 @@ public class DummySpeciesFactory implements PokemonSpeciesFactory {
 		tackle.setPower(50);
 		tackle.setPriority(0);
 		tackle.setType(Poketype.NORMAL);
+		tackle.setBasePp(35);
+		tackle.setCurrentPp(35);
+		tackle.setDamageClass(DamageClass.PHYSICAL);
 		bulbaSpecies.setSpeciesId(1);
 		bulbaSpecies.setTypes(new PoketypeSet (Poketype.GRASS, Poketype.POISON));
 		bulbaSpecies.setWeight(69);

@@ -26,6 +26,8 @@ import de.darthpumpkin.pkmnlib.battle.Turn;
 import de.darthpumpkin.pkmnlib.battle.Weather;
 
 /**
+ * All reference values taken from http://www.smogon.com/calc/
+ * 
  * @author dominik
  * 
  */
@@ -196,6 +198,49 @@ public class TrainerBattle1vs1Test {
 	@Test
 	public void testTurnOrder() {
 		fail("Not yet implemented");
+	}
+
+	/**
+	 * Test method for
+	 * {@link de.darthpumpkin.pkmnlib.battle.TrainerBattle1vs1#doTurn()}.
+	 * Easiest case: Two lvl 12 bulbasaurs using tackle at full health, where
+	 * the first one has +2 atk boost.
+	 */
+	@Test
+	public void testDamageCalculationWithStatBoost() {
+		for (int i = 0; i < 200; i++) {
+			// first test with +2 atk
+			TrainerBattle1vs1 battle = makeEasyBulbaBattle(12);
+			battle.start();
+			PokemonBattleInstance boosted = battle.getActivePkmns()[0];
+			PokemonBattleInstance other = battle.getActivePkmns()[1];
+			boosted.setTemporaryStatModifiers(new int[] { 0, 2, 0, 0, 0, 0 });
+			SingleBattlePlayer[] players = (SingleBattlePlayer[]) battle
+					.getPlayers();
+			HashMap<Player, Turn> turns = new HashMap<Player, Turn>();
+			for (Player p : players) {
+				turns.put(p, p.makeTurn());
+			}
+			battle.doTurn(turns);
+			assertEquals(25.0, boosted.getInstance().getCurrentHp(), 1.1);
+			assertEquals(19.5, other.getInstance().getCurrentHp(), 1.51);
+
+			// now with -2 def
+			battle = makeEasyBulbaBattle(12);
+			battle.start();
+			boosted = battle.getActivePkmns()[0];
+			other = battle.getActivePkmns()[1];
+			boosted.setTemporaryStatModifiers(new int[] { 0, 0, -2, 0, 0, 0 });
+			players = (SingleBattlePlayer[]) battle
+					.getPlayers();
+			turns = new HashMap<Player, Turn>();
+			for (Player p : players) {
+				turns.put(p, p.makeTurn());
+			}
+			battle.doTurn(turns);
+			assertEquals(19.5, boosted.getInstance().getCurrentHp(), 1.51);
+			assertEquals(25.0, other.getInstance().getCurrentHp(), 1.1);
+		}
 	}
 
 	// TODO more test cases for doTurn()
