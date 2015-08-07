@@ -7,6 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -94,7 +95,7 @@ public class TrainerBattle1vs1Test {
 	 * Easiest case: Two lvl 1 bulbasaurs using tackle at full health
 	 */
 	@Test
-	public void testDoTurn1() {
+	public void testDamageCalculation1() {
 		TrainerBattle1vs1 battle = makeEasyBulbaBattle(1);
 		battle.start();
 		SingleBattlePlayer[] players = (SingleBattlePlayer[]) battle
@@ -116,7 +117,7 @@ public class TrainerBattle1vs1Test {
 	 * last one before forgetting tackle)
 	 */
 	@Test
-	public void testDoTurn2() {
+	public void testDamageCalculation2() {
 		TrainerBattle1vs1 battle = makeEasyBulbaBattle(10);
 		battle.start();
 		SingleBattlePlayer[] players = (SingleBattlePlayer[]) battle
@@ -134,10 +135,11 @@ public class TrainerBattle1vs1Test {
 	/**
 	 * Test method for
 	 * {@link de.darthpumpkin.pkmnlib.battle.TrainerBattle1vs1#doTurn()}. 3rd
-	 * case: first bulbasaur faints, battle ends
+	 * case: Two lvl 1 bulbasaurs at 1 HP each. First bulbasaur faints, battle
+	 * ends
 	 */
 	@Test
-	public void testDoTurnFaintFinish() {
+	public void testBattleFinishesAfterFaint() {
 		TrainerBattle1vs1 battle = makeEasyBulbaBattle(1);
 		battle.start();
 		SingleBattlePlayer[] players = (SingleBattlePlayer[]) battle
@@ -161,7 +163,7 @@ public class TrainerBattle1vs1Test {
 	 * case: bulbasaur faints, new bulbasaur is sent in
 	 */
 	@Test
-	public void testDoTurnFaintNotFinish() {
+	public void testSendInNextPkmnAfterFaint() {
 		TrainerBattle1vs1 battle = makeEasyBulbaBattle(1);
 		SingleBattlePlayer[] players = battle.getPlayers();
 		SingleBattlePlayer playerWith2Pkmn = battle.getPlayers()[0];
@@ -177,18 +179,30 @@ public class TrainerBattle1vs1Test {
 		}
 		battle.doTurn(turns);
 		assertFalse(playerWith2Pkmn.getTeam().get(0).isUsable());
-		assertSame(scndBulba, playerWith2Pkmn.getActivePokemon()
-				.getInstance());
-		assertSame(playerWith1Pkmn.getTeam().get(0),
-				playerWith1Pkmn.getActivePokemon().getInstance());
+		assertSame(scndBulba, playerWith2Pkmn.getActivePokemon().getInstance());
+		assertSame(playerWith1Pkmn.getTeam().get(0), playerWith1Pkmn
+				.getActivePokemon().getInstance());
 		assertEquals(11, scndBulba.getCurrentHp());
 		assertTrue(battle.isActive());
+	}
+
+	/**
+	 * Test method for
+	 * {@link de.darthpumpkin.pkmnlib.battle.TrainerBattle1vs1#doTurn()}. Test
+	 * that turns are executed in the order specified by
+	 * {@link Turn#compareTo(Turn)}, additionally taking into account the
+	 * pokemons' speed and the battle's state.
+	 */
+	@Test
+	public void testTurnOrder() {
+		fail("Not yet implemented");
 	}
 
 	// TODO more test cases for doTurn()
 
 	private TrainerBattle1vs1 makeEasyBulbaBattle(int level) {
-		PokemonInstanceBuilder b = new PokemonInstanceBuilder(bulbaSpecies).setLevel(level);
+		PokemonInstanceBuilder b = new PokemonInstanceBuilder(bulbaSpecies)
+				.setLevel(level);
 		UniqueBoundedList<PokemonInstance> team1 = new UniqueBoundedList<>();
 		team1.add(b.makePokemon());
 		UniqueBoundedList<PokemonInstance> team2 = new UniqueBoundedList<>();

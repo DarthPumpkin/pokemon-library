@@ -18,6 +18,7 @@ public class PokemonBattleInstance implements ItemContainer {
 											// switch-out
 	private boolean flying; // in the air by using the move 'fly'
 	private boolean confused;
+	private boolean leechSeeded;
 
 	public PokemonBattleInstance(PokemonInstance instance) {
 		this.instance = instance;
@@ -101,6 +102,14 @@ public class PokemonBattleInstance implements ItemContainer {
 			return c * (2 + t) / 2;
 		}
 		return c * 2 / (2 - t);
+	}
+
+	public boolean isLeechSeeded() {
+		return this.leechSeeded;
+	}
+
+	public void setLeechSeeded(boolean b) {
+		this.leechSeeded = b;
 	}
 
 }

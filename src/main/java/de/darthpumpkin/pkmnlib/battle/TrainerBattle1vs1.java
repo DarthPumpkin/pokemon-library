@@ -304,9 +304,28 @@ public class TrainerBattle1vs1 extends AbstractBattle {
 						// TODO log!
 						break;
 					case 101:
-						// TODO implement
+						// TODO there are moves that can prevent using
+						// non-damage attacks
+						// TODO there are moves and items that prevent status
+						// loss
+						int atkIdx = Stat.ATK.i();
+						int[] modifiers = defendingPkmn.getTemporaryStatModifiers();
+						if (modifiers[atkIdx] > -6) {
+							modifiers[atkIdx] -= 1;
+							defendingPkmn.setTemporaryStatModifiers(modifiers);
+							// TODO log success
+						} else {
+							// TODO log failure
+						}
 					case 1001:
-						// TODO implement
+						// TODO there are moves that can prevent using
+						// non-damage attacks
+						if (defendingPkmn.isLeechSeeded()) {
+							// TODO log pkmn is already leech-seeded
+						} else {
+							defendingPkmn.setLeechSeeded(true);
+							// TODO log success
+						}
 					default:
 						throw new RuntimeException("Unknown effect id: "
 								+ tree.getEffectId());
