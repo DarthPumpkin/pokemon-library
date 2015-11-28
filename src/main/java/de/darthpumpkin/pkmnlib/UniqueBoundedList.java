@@ -1,12 +1,6 @@
 package de.darthpumpkin.pkmnlib;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
@@ -17,7 +11,7 @@ import com.google.common.collect.ListMultimap;
  * abstraction of a pokemon team, but it is also applicable for a move list and
  * similar data structures.<br>
  * <br>
- * The constraint of no multiple refrences can be described more explicitly as:
+ * The constraint of no multiple references can be described more explicitly as:
  * This list does not contain any two elements e1 and e2 such that e1 == e2. It
  * does not matter whether or not e1.equals(e2).<br>
  * The constraint of not allowing null elements implies that all elements will
@@ -26,12 +20,14 @@ import com.google.common.collect.ListMultimap;
  * @author dominik
  * 
  */
-public final class UniqueBoundedList<E> implements List<E> {
+// TODO rename (BoundedIndexableSet ?)
+public final class UniqueBoundedList<E> implements Team<E> {
 
 	public static final int DEFAULT_MAX_SIZE = 6;
 
 	// Actual list with entries in correct order
 	private final List<E> list;
+	// TODO use set instead of multimap: compare equals() instead of ==
 	// Maps a hash value to the list of entries with that hash value (Idea: two
 	// entries with identical hash values are likely to be identical)
 	private final ListMultimap<Integer, E> hashes;
@@ -47,7 +43,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 	/**
 	 * Creates a new empty list using the specified number as the upper limit of
 	 * elements in this list.
-	 * 
+	 *
 	 * @param maxSize
 	 *            Maximum number of elements in this list.
 	 * @throws IllegalArgumentException
@@ -62,7 +58,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 	 * in the order they are returned by the Collection's iterator, except for
 	 * null elements. Sets {@value #DEFAULT_MAX_SIZE} as the maximum number of
 	 * elements in this list.
-	 * 
+	 *
 	 * @param coll
 	 *            Collection whose elements are to be placed in this list.
 	 * @throws MaximumSizeExceededException
@@ -77,7 +73,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 	 * in the order they are returned by the Collection's iterator, except for
 	 * null elements. Sets the specified number as the upper limit of elements
 	 * in this list.
-	 * 
+	 *
 	 * @param coll
 	 *            Collection whose elements are to be placed in this list.
 	 * @param maxSize
@@ -103,16 +99,9 @@ public final class UniqueBoundedList<E> implements List<E> {
 		addAll(coll);
 	}
 
-	/**
-	 * Returns the upper limit for this list's size.
-	 */
-	public int maxSize() {
-		return this.maxSize;
-	}
-
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.List#size()
 	 */
 	@Override
@@ -122,7 +111,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.List#isEmpty()
 	 */
 	@Override
@@ -132,7 +121,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.List#contains(java.lang.Object)
 	 */
 	@Override
@@ -142,17 +131,18 @@ public final class UniqueBoundedList<E> implements List<E> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.List#iterator()
 	 */
 	@Override
 	public Iterator<E> iterator() {
+		// TODO create a custom iterator that can handle removal properly
 		return list.iterator();
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.List#toArray()
 	 */
 	@Override
@@ -162,7 +152,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.List#toArray(java.lang.Object[])
 	 */
 	@Override
@@ -170,16 +160,10 @@ public final class UniqueBoundedList<E> implements List<E> {
 		return list.toArray(a);
 	}
 
-	/**
-	 * If there is space left in this list, this method adds the given element
-	 * to the end of this list, as specified in {@link List#add(Object)}.
-	 * Otherwise throws a {@link MaximumSizeExceededException}.
-	 * 
-	 * @throws MaximumSizeExceededException
-	 *             If there is no space left in the list.
-	 * @throws NullPointerException
-	 *             if e == null
-	 * @see List#add(E)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see java.util.List#toArray(java.lang.Object[])
 	 */
 	@Override
 	public boolean add(E e) {
@@ -189,7 +173,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.List#remove(java.lang.Object)
 	 */
 	@Override
@@ -200,7 +184,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.List#containsAll(java.util.Collection)
 	 */
 	@Override
@@ -208,44 +192,24 @@ public final class UniqueBoundedList<E> implements List<E> {
 		return hashes.values().containsAll(c);
 	}
 
-	/**
-	 * If there is enough space left in this list, this method adds the elements
-	 * of given Collection to the end of this list, as specified in
-	 * {@link #addAll(Collection)}. Otherwise throws a
-	 * {@link MaximumSizeExceededException}. Null elmements are not addded to
-	 * the list.
-	 * 
-	 * @throws MaximumSizeExceededException
-	 *             If there is not enough space left in the list to add all
-	 *             elements from the Collection, i.e. if size()+c.size() >=
-	 *             {@link #maxSize()}
-	 * @throws NullPointerException
-	 *             If c == null
-	 * @see List#add(Collection)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see java.util.List#toArray(java.lang.Object[])
 	 */
 	@Override
 	public boolean addAll(Collection<? extends E> c) {
 		return addAll(list.size(), c);
 	}
 
-	/**
-	 * If there is enough space left in the list, this method adds the elements
-	 * of given Collection at specified index to this list, as specified in
-	 * {@link #addAll(Collection)}. Otherwise throws a
-	 * {@link MaximumSizeExceededException}. Null elmements are not addded to
-	 * the list. If index > {@link #size()}, the elements will be appended to
-	 * the end of this list. No {@link IndexOutOfBoundsException} is thrown.
-	 * 
-	 * @throws MaximumSizeExceededException
-	 *             If there is not enough space left in the list to add all
-	 *             elements from the Collection, i.e. if {@link #size()}
-	 *             +c.size() >= maxSize
-	 * @throws NullPointerException
-	 *             If c == null
-	 * @see List#addAll(int, Collection)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see java.util.List#toArray(java.lang.Object[])
 	 */
 	@Override
 	public boolean addAll(int index, Collection<? extends E> c) {
+		// TODO compare equals() istead of ==
 		if (c.isEmpty()) {
 			return false;
 		}
@@ -284,7 +248,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.List#removeAll(java.util.Collection)
 	 */
 	@Override
@@ -295,7 +259,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.List#retainAll(java.util.Collection)
 	 */
 	@Override
@@ -306,7 +270,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.List#clear()
 	 */
 	@Override
@@ -317,52 +281,47 @@ public final class UniqueBoundedList<E> implements List<E> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.List#get(int)
 	 */
 	@Override
 	public E get(int index) {
+		// TODO allow size <= indices < maximumSize
 		return list.get(index);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.List#set(int, java.lang.Object)
 	 */
 	@Override
 	public E set(int index, E element) {
+		// TODO allow size <= indices < maximumSize
+		// TODO IllegalArgumentException if element == null
 		E previous = list.set(index, element);
 		hashes.remove(previous.hashCode(), previous);
 		hashes.put(element.hashCode(), element);
 		return previous;
 	}
 
-	/**
-	 * If there is space left in the list, this method adds the given element at
-	 * specified index to this list, as specified in {@link List#add(Object)}.
-	 * Otherwise throws a {@link MaximumSizeExceededException}. If index >
-	 * {@link #size()}, the elements will be appended to the end of this list.
-	 * No {@link IndexOutOfBoundsException} is thrown.
-	 * 
-	 * @throws MaximumSizeExceededException
-	 *             If there is no space left in the list.
-	 * @throws NullPointerException
-	 *             if element == null
-	 * @see List#add(int, E)
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see java.util.List#remove(int)
 	 */
 	@Override
-	public void add(int index, E element) {
+	public boolean add(int index, E element) {
 		if (element == null) {
 			throw new NullPointerException(
 					"A Team does not store null elements");
 		}
-		addAll(index, Collections.singleton(element));
+		return addAll(index, Collections.singleton(element));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.List#remove(int)
 	 */
 	@Override
@@ -374,7 +333,7 @@ public final class UniqueBoundedList<E> implements List<E> {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see java.util.List#indexOf(java.lang.Object)
 	 */
 	@Override
@@ -382,46 +341,20 @@ public final class UniqueBoundedList<E> implements List<E> {
 		return list.indexOf(o);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.List#lastIndexOf(java.lang.Object)
-	 */
 	@Override
-	public int lastIndexOf(Object o) {
-		return list.lastIndexOf(o);
+	public int maximumSize() {
+		return maxSize;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.List#listIterator()
-	 */
 	@Override
-	public ListIterator<E> listIterator() {
-		return list.listIterator();
+	public void swap(int index1, int index2) {
+		int actualIndex1 = Math.min(index1, size());
+		int actualIndex2 = Math.min(index2, size());
+		Collections.swap(list, actualIndex1, actualIndex2);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.List#listIterator(int)
-	 */
 	@Override
-	public ListIterator<E> listIterator(int index) {
-		return list.listIterator(index);
+	public List<E> asList() {
+		return Collections.unmodifiableList(list);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.util.List#subList(int, int)
-	 */
-	// TODO return a list that fulfills the specification. Currently, the
-	// returned list does not modify the multimap.
-	@Override
-	public List<E> subList(int fromIndex, int toIndex) {
-		return list.subList(fromIndex, toIndex);
-	}
-
 }

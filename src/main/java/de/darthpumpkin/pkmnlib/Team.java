@@ -148,7 +148,7 @@ public interface Team<E> extends Set<E> {
     /**
      * Replaces the element at the specified position in this list with the
      * specified element. In contrast to {@link #add(int, Object)}, this method
-     * will throw an exception if the specified element is null or already in
+     * will throw an exception if the specified element is already in
      * this team.
      *
      * @param index
