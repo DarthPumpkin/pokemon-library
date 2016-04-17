@@ -62,4 +62,22 @@ public class WritableBattleEventBroadcaster implements BattleEventBroadcaster {
         }
     }
 
+    public BattleEventBroadcaster asReadOnly() {
+        return new BattleEventBroadcaster() {
+            @Override
+            public Collection<BattleEvent> eventLog() {
+                return this.eventLog();
+            }
+
+            @Override
+            public boolean addEventListener(BattleEventListener l) {
+                return this.addEventListener(l);
+            }
+
+            @Override
+            public boolean removeEventListener(BattleEventListener l) {
+                return this.removeEventListener(l);
+            }
+        };
+    }
 }
