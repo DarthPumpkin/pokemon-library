@@ -1,9 +1,12 @@
 package de.darthpumpkin.pkmnlib.battle;
 
 /**
+ * Takes care of the actual battle logic in a synchronous way by implementing
+ * all the turn steps.
+ * 
  * @author Dominik Fay
  */
-public interface BattleEventProducer {
+public interface BattleDelegate {
 
     /**
      * Performs those actions that happen once at the beginning of the battle,

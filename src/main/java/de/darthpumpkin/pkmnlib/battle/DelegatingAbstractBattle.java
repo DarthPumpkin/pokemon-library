@@ -2,25 +2,14 @@ package de.darthpumpkin.pkmnlib.battle;
 
 /**
  * <p>
- * This abstract layer splits battle implementation into a producing part and a
- * consuming part: The producer takes care of the battle logic and decides when
- * new battle events are triggered. The consumer ("applier") is the core part of
- * the engine: It changes the internal state of the battle, e.g. damage
- * infliction, accoring to the battle events received from the producer.
+ * This abstract layer splits battle implementation into an outer and an inner
+ * part: The battle loop iterates over the turns and turn steps and the battle
+ * delegate executes the actual logic. That is, this battle class can be used
+ * together with any {@link BattleDelegate} implementation.
  * </p>
  * <p>
- * Therefore, the producer only needs read access to the internal battle state.
- * It is the responsibility of the implementing class to initialize both the
- * producer and the applier with the neccessary access to the internal battle
- * state.
- * </p>
- * <p>
- * Furthermore, it must implement {@link #getBattleState()} since this depends
- * on the internal design of the data.
- * </p>
- * <p>
- * Control flow is inverted by handing it over to an external {@link BattleLoop}
- * .
+ * Any subclass must implement {@link #getBattleState()} since this depends on
+ * the internal design of the data.
  * </p>
  *
  * @author Dominik Fay
@@ -28,13 +17,12 @@ package de.darthpumpkin.pkmnlib.battle;
  */
 public abstract class DelegatingAbstractBattle implements Battle {
 
-    private final WritableBattleEventBroadcaster broadcaster = new WritableBattleEventBroadcaster();
+    private final WritableBattleEventBroadcaster broadcaster;
     private final Thread loop;
 
-    public DelegatingAbstractBattle(BattleEventProducer producer,
-            BattleEventApplier applier) {
-        this.loop = new Thread(new BattleLoop(this, producer));
-        broadcaster.addEventListener(applier);
+    public DelegatingAbstractBattle(BattleDelegate delegate) {
+        this.broadcaster = new WritableBattleEventBroadcaster();
+        this.loop = new Thread(new BattleLoop(this, delegate));
     }
 
     @Override
