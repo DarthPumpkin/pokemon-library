@@ -1,9 +1,6 @@
 package de.darthpumpkin.pkmnlib.battle;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -11,7 +8,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Thread-safe implementation of the {@link BattleEventBroadcaster} interface
  * that can receive events via the {@link #receiveEvent(BattleEvent)} method.
  * <p>
- * Thread-satety in this context means that this class will never fail due to
+ * Thread-safety in this context means that this class will never fail due to
  * concurrent usage and no external synchronization is needed. If listeners are
  * being registered or unregistered while calling
  * {@link #receiveEvent(BattleEvent)}, then those listeners may or may not be
@@ -28,7 +25,7 @@ public class WritableBattleEventBroadcaster implements BattleEventBroadcaster {
 
     @Override
     public Collection<BattleEvent> eventLog() {
-        return Collections.unmodifiableCollection(eventLog);
+        return Collections.unmodifiableCollection(new ArrayList<>(eventLog));
     }
 
     @Override
@@ -62,6 +59,12 @@ public class WritableBattleEventBroadcaster implements BattleEventBroadcaster {
         }
     }
 
+    /**
+     * Return a view that does not implement {@link #receiveEvent(BattleEvent)}
+     * but otherwise behaves equally.
+     * 
+     * @return the view
+     */
     public BattleEventBroadcaster asReadOnly() {
         return new BattleEventBroadcaster() {
             @Override
